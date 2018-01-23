@@ -3,6 +3,7 @@ import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.image.BufferStrategy;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -27,6 +28,7 @@ public class Practice_1
     double Vsr = 0; // выборочная средняя
     double Vdisp = 0;   // выборочная дисперсия
     double[] x = new double[size];
+    Interval[] intervals;
     Map<Double, Integer> frequency = new HashMap<Double, Integer>();
     ArrayList<JFrame> frames = new ArrayList<JFrame>();
 
@@ -145,6 +147,43 @@ public class Practice_1
         return table;
     }
 
+    public JFrame createCanvasFrame(String title)
+    {
+        JFrame frame = createFrame(title);
+
+        Canvas canvas = new Canvas();
+        frame.add(canvas, BorderLayout.CENTER);
+
+        addTask(title, frame);
+
+        frame.setVisible(true);
+
+        BufferStrategy bs = canvas.getBufferStrategy();
+        if (bs == null)
+        {
+            canvas.createBufferStrategy(3);
+        }
+        bs = canvas.getBufferStrategy();
+        bs.show();
+
+//        frame.setVisible(false);
+
+        JButton but = new JButton();
+        but.setText("paint");
+        but.setVisible(true);
+
+        but.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                frame.paint(bs.getDrawGraphics());
+            }
+        });
+
+        frame.add(but);
+
+        return frame;
+    }
+
     public void addTask(String buttonName, JFrame frame)
     {
         JButton but = new JButton();
@@ -177,7 +216,7 @@ public class Practice_1
     public void task_1_3()
     {
         int sizeInt = 10;
-        Interval[] intervals = new Interval[sizeInt];
+        intervals = new Interval[sizeInt];
 
         intervals[0] = new Interval(0d, 0.1d);
         intervals[1] = new Interval(0.1d, 0.2d);
@@ -226,7 +265,21 @@ public class Practice_1
 
         JTable table = createTableFrame("Task 1.3", tableValues, tableColumns);
 
-//        table.setSize(11, 3);
+    }
+
+    public void task_1_4()
+    {
+        JFrame frame = createCanvasFrame("Task 1.4");
+        Canvas canvas = (Canvas)frame.getContentPane().getComponent(0);
+        BufferStrategy bs = canvas.getBufferStrategy();
+        Graphics gr = bs.getDrawGraphics();
+        gr.setColor(Color.BLACK);
+        gr.fillRect(50, 50, 100, 100);
+        gr.drawRect(50,50,50,50);
+        bs.show();
+
+        frame.paint(gr);
+//        Interval[] intervals
     }
 
     private class Interval
