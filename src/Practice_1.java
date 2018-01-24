@@ -152,6 +152,9 @@ public class Practice_1
         JFrame frame = createFrame(title);
 
         Canvas canvas = new Canvas();
+        canvas.setSize(500, 500);
+        canvas.setBackground(Color.BLACK);
+
         frame.add(canvas, BorderLayout.CENTER);
 
         addTask(title, frame);
@@ -172,12 +175,12 @@ public class Practice_1
         but.setText("paint");
         but.setVisible(true);
 
-        but.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent actionEvent) {
-                frame.paint(bs.getDrawGraphics());
-            }
-        });
+//        but.addActionListener(new ActionListener() {
+//            @Override
+//            public void actionPerformed(ActionEvent actionEvent) {
+//                frame.paint(bs.getDrawGraphics());
+//            }
+//        });
 
         frame.add(but);
 
