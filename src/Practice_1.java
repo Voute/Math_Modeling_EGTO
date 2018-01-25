@@ -147,13 +147,14 @@ public class Practice_1
         return table;
     }
 
-    public JFrame createCanvasFrame(String title)
+    public JFrame createCanvasFrame(String title, DrawAction action)
     {
         JFrame frame = createFrame(title);
 
-        Canvas canvas = new Canvas();
+        final Canvas canvas = new Canvas();
         canvas.setSize(500, 500);
         canvas.setBackground(Color.BLACK);
+        canvas.createBufferStrategy(1);
 
         frame.add(canvas, BorderLayout.CENTER);
 
@@ -161,28 +162,30 @@ public class Practice_1
 
         frame.setVisible(true);
 
-        BufferStrategy bs = canvas.getBufferStrategy();
-        if (bs == null)
-        {
-            canvas.createBufferStrategy(3);
-        }
-        bs = canvas.getBufferStrategy();
-        bs.show();
-
-//        frame.setVisible(false);
-
         JButton but = new JButton();
         but.setText("paint");
         but.setVisible(true);
 
-//        but.addActionListener(new ActionListener() {
-//            @Override
-//            public void actionPerformed(ActionEvent actionEvent) {
-//                frame.paint(bs.getDrawGraphics());
-//            }
-//        });
+        but.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+                BufferStrategy bs = canvas.getBufferStrategy();
+                if (bs == null)
+                {
+                    canvas.createBufferStrategy(1);
+                }
+                bs = canvas.getBufferStrategy();
+                Graphics gr = bs.getDrawGraphics();
+                action.draw(gr);
+                gr.dispose();
+                bs.show();
+                frame.repaint();
+            }
+        });
 
         frame.add(but);
+        frame.repaint();
+        frame.setVisible(false);
 
         return frame;
     }
@@ -272,16 +275,25 @@ public class Practice_1
 
     public void task_1_4()
     {
-        JFrame frame = createCanvasFrame("Task 1.4");
-        Canvas canvas = (Canvas)frame.getContentPane().getComponent(0);
-        BufferStrategy bs = canvas.getBufferStrategy();
-        Graphics gr = bs.getDrawGraphics();
-        gr.setColor(Color.BLACK);
-        gr.fillRect(50, 50, 100, 100);
-        gr.drawRect(50,50,50,50);
-        bs.show();
+        DrawAction action = new DrawAction() {
+            @Override
+            public void draw(Graphics gr) {
+                gr.setColor(Color.WHITE);
+                gr.fillRect(50, 50, 100, 100);
+                gr.drawRect(50,50,50,50);
+            }
+        };
+        JFrame frame = createCanvasFrame("Task 1.4", action);
 
-        frame.paint(gr);
+//        Canvas canvas = (Canvas)frame.getContentPane().getComponent(0);
+//        BufferStrategy bs = canvas.getBufferStrategy();
+//        Graphics gr = bs.getDrawGraphics();
+//        gr.setColor(Color.BLACK);
+//        gr.fillRect(50, 50, 100, 100);
+//        gr.drawRect(50,50,50,50);
+//        bs.show();
+
+//        frame.paint(gr);
 //        Interval[] intervals
     }
 
