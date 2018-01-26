@@ -1,5 +1,4 @@
 import javax.swing.*;
-import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -27,15 +26,31 @@ public class Practice_1
     double D = 0;   // дисперсия
     double Vsr = 0; // выборочная средняя
     double Vdisp = 0;   // выборочная дисперсия
-    double[] x = new double[size];
+    Double[] x = new Double[size];
+    int sizeIntervals = 10;
+    String[][] tableValues_13 = new String[11][3];
+    double[] chartValues = new double[sizeIntervals];
     Interval[] intervals;
     Map<Double, Integer> frequency = new HashMap<Double, Integer>();
     ArrayList<JFrame> frames = new ArrayList<JFrame>();
 
     Practice_1()
     {
+        intervals = new Interval[sizeIntervals];
+
+        intervals[0] = new Interval(0d, 0.1d);
+        intervals[1] = new Interval(0.1d, 0.2d);
+        intervals[2] = new Interval(0.2d, 0.3d);
+        intervals[3] = new Interval(0.3d, 0.4d);
+        intervals[4] = new Interval(0.4d, 0.5d);
+        intervals[5] = new Interval(0.5d, 0.6d);
+        intervals[6] = new Interval(0.6d, 0.7d);
+        intervals[7] = new Interval(0.7d, 0.8d);
+        intervals[8] = new Interval(0.8d, 0.9d);
+        intervals[9] = new Interval(0.9d, 1d);
+
         rootFrame = new JFrame();
-        rootFrame.setSize(1300, 600);
+        rootFrame.setSize(800, 600);
 
         textArea = new JTextArea();
         textArea.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
@@ -44,6 +59,7 @@ public class Practice_1
 //        panel.add(textArea);
 
         rootFrame.setContentPane(panel);
+        rootFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         rootFrame.setVisible(true);
     }
 
@@ -65,7 +81,7 @@ public class Practice_1
 
         D -= Math.pow(Mo, 2);
 
-
+        JList list = createListFrame("Show generated values", x);
     }
 
     double increaseMo(double Mo, double n, double v)
@@ -112,7 +128,7 @@ public class Practice_1
     {
         JFrame frame = new JFrame();
         frame.setTitle(title);
-        frame.setSize(1300, 600);
+        frame.setSize(800, 600);
 
         JPanel panel = new JPanel();
 
@@ -147,16 +163,35 @@ public class Practice_1
         return table;
     }
 
-    public JFrame createCanvasFrame(String title, DrawAction action)
+    public JList createListFrame(String title, Object[] data)
     {
         JFrame frame = createFrame(title);
 
-        final Canvas canvas = new Canvas();
-        canvas.setSize(500, 500);
-        canvas.setBackground(Color.BLACK);
-        canvas.createBufferStrategy(1);
+        JList list = new JList(data);
+        list.setVisible(true);
+        Dimension size = new Dimension(100, 600);
+        list.setSize(size);
+        list.setPreferredSize(size);
+        JScrollPane pane = new JScrollPane(list);
+        pane.setSize(size);
+        pane.setPreferredSize(size);
+        frame.getContentPane().add(pane);
 
-        frame.add(canvas, BorderLayout.CENTER);
+        addTask(title, frame);
+
+        return list;
+    }
+
+    public JFrame createCanvasFrame(String title, DrawAction action, Chart chart)
+    {
+        JFrame frame = createFrame(title);
+
+//        final Canvas canvas = new Canvas();
+//        canvas.setSize(700, 700);
+//        canvas.setBackground(Color.BLACK);
+//        canvas.createBufferStrategy(1);
+
+        frame.add(chart, BorderLayout.CENTER);
 
         addTask(title, frame);
 
@@ -169,12 +204,12 @@ public class Practice_1
         but.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent actionEvent) {
-                BufferStrategy bs = canvas.getBufferStrategy();
+                BufferStrategy bs = chart.getBufferStrategy();
                 if (bs == null)
                 {
-                    canvas.createBufferStrategy(1);
+                    chart.createBufferStrategy(1);
                 }
-                bs = canvas.getBufferStrategy();
+                bs = chart.getBufferStrategy();
                 Graphics gr = bs.getDrawGraphics();
                 action.draw(gr);
                 gr.dispose();
@@ -221,69 +256,57 @@ public class Practice_1
 
     public void task_1_3()
     {
-        int sizeInt = 10;
-        intervals = new Interval[sizeInt];
-
-        intervals[0] = new Interval(0d, 0.1d);
-        intervals[1] = new Interval(0.1d, 0.2d);
-        intervals[2] = new Interval(0.2d, 0.3d);
-        intervals[3] = new Interval(0.3d, 0.4d);
-        intervals[4] = new Interval(0.4d, 0.5d);
-        intervals[5] = new Interval(0.5d, 0.6d);
-        intervals[6] = new Interval(0.6d, 0.7d);
-        intervals[7] = new Interval(0.7d, 0.8d);
-        intervals[8] = new Interval(0.8d, 0.9d);
-        intervals[9] = new Interval(0.9d, 1d);
 
         for (int i = 0; i < size; i++) {
-            for (int n = 0; n < sizeInt; n++) {
+            for (int n = 0; n < sizeIntervals; n++) {
                 intervals[n].check(x[i]);
             }
         }
 
-        String[][] tableValues = new String[11][3];
-
         int sum = 0;
         double sum2 = 0;
-         for (int n = 0; n < sizeInt; n++) {
-             tableValues[n][0] = intervals[n].gr + " to " + intervals[n].lte;
-             tableValues[n][1] = Integer.toString(intervals[n].count);
-             tableValues[n][2] = Double.toString(intervals[n].getCh(size));
+         for (int n = 0; n < sizeIntervals; n++) {
+             tableValues_13[n][0] = intervals[n].gr + " to " + intervals[n].lte;
+             tableValues_13[n][1] = Integer.toString(intervals[n].count);
+             tableValues_13[n][2] = Double.toString(intervals[n].getCh(size));
              sum += intervals[n].count;
              sum2 += intervals[n].getCh(size);
          }
 
-        tableValues[10][1] = "total";
-        tableValues[10][1] = Integer.toString(sum);
-        tableValues[10][2] = Double.toString(sum2);
+        tableValues_13[10][1] = "total";
+        tableValues_13[10][1] = Integer.toString(sum);
+        tableValues_13[10][2] = Double.toString(sum2);
 
         String[] tableColumns = {"Interval", "Count", "Frequency"};
 
-//        for (int i = 0; i < size; i++) {
-//            countFreq(frequency, x[i]);
-//        }
-//
-//        for (int i=0; i < frequency.size(); i++)
-//        {
-//            System.out.print("key " + frequency.keySet().toArray()[i] + " ");
-//            System.out.println("value " + frequency.values().toArray()[i]);
-//        }
-
-        JTable table = createTableFrame("Task 1.3", tableValues, tableColumns);
+        JTable table = createTableFrame("Task 1.3", tableValues_13, tableColumns);
 
     }
 
     public void task_1_4()
     {
+        for (int i = 0; i < sizeIntervals; i++)
+        {
+            chartValues[i] = Double.parseDouble(tableValues_13[i][2]) / 0.1d;
+            System.out.println(" chart value " + i + " = " + chartValues[i]);
+        }
+
+        Chart chart = new Chart(500, 500);
+
         DrawAction action = new DrawAction() {
             @Override
             public void draw(Graphics gr) {
-                gr.setColor(Color.WHITE);
-                gr.fillRect(50, 50, 100, 100);
-                gr.drawRect(50,50,50,50);
+//                gr.setColor(Color.WHITE);
+//                gr.fillRect(50, 50, 100, 100);
+//                gr.drawRect(50,50,50,50);
+
+                // draw initial lines
+                chart.drawInitialLines(gr, sizeIntervals);
+                chart.drawBar(gr, chartValues[0],intervals[0].gr);
+//                chart.drawBar();
             }
         };
-        JFrame frame = createCanvasFrame("Task 1.4", action);
+        JFrame frame = createCanvasFrame("Task 1.4", action, chart);
 
 //        Canvas canvas = (Canvas)frame.getContentPane().getComponent(0);
 //        BufferStrategy bs = canvas.getBufferStrategy();
