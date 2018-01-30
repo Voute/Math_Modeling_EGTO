@@ -291,7 +291,7 @@ public class Practice_1
     {
         for (int i = 0; i < sizeIntervals; i++)
         {
-            chartValues[i] = Double.parseDouble(tableValues_13[i][2]) / 0.1d;
+            chartValues[i] = Double.parseDouble(tableValues_13[i][1]) / 0.1d;
             System.out.println(" chart value " + i + " = " + chartValues[i]);
         }
 
@@ -306,7 +306,9 @@ public class Practice_1
 
                 // draw initial lines
                 chart.drawInitialLines(gr, sizeIntervals);
-                chart.drawBar(gr, chartValues[0],intervals[0].gr);
+                for (int n = 0; n < chartValues.length; n++) {
+                    chart.drawBar(gr, chartValues[n], intervals[0].gr);
+                }
 //                chart.drawBar();
             }
         };

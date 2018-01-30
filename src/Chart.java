@@ -1,13 +1,13 @@
 import java.awt.*;
-import java.awt.image.BufferStrategy;
-import java.io.BufferedReader;
 
 public class Chart extends Canvas
 {
     final Color background = Color.BLACK;
     int x0, y0;
     final int BAR_WIDTH = 10;
-    final int CHART_FACTOR = 100;
+    final double X_FACTOR = 0.1d;
+    final double Y_FACTOR = 100;
+    int nextBarX = 0;
 
     public Chart(int width, int height)
     {
@@ -35,24 +35,32 @@ public class Chart extends Canvas
         int Ly = 30;
         gr.drawString("1/L", x0 - 30, Ly);
 //        System.out.println(Ly);
-//        System.out.println(oneL);
-        gr.drawLine(x0 - 10, Ly, getWidth(), Ly);
+//        System.out.println("one L = " + oneL);
+//        gr.drawLine(x0 - 10, Ly, getWidth(), Ly);
 
 //        gr.fillRect(10,10,50,50);
     }
 
-    private int factor(double i)
+    private int factorX(double i)
     {
-        return (int) (i * CHART_FACTOR);
+        return (int) (i * X_FACTOR);
     }
+    private int factorY(double i)
+    {
+        return (int) (i * Y_FACTOR);
+    }
+
 
     public void drawBar(Graphics gr, double height, double x)
     {
-        gr.setColor(Color.CYAN);
 
-        height = factor(height);
-        x = factor(x);
-        gr.fillRect(x0 + (int)x, y0 - (int)height, BAR_WIDTH, (int)height);
+        height = factorX(height);
+        x = factorX(x);
+        gr.setColor(Color.CYAN);
+        gr.fillRect(x0 + (int)x + nextBarX, y0 - (int)height, BAR_WIDTH, (int)height);
+        gr.setColor(Color.RED);
+        gr.drawRect(x0 + (int)x + nextBarX, y0 - (int)height, BAR_WIDTH, (int)height);
         System.out.println("rect height = " + height + " rect x = " + x);
+        nextBarX += BAR_WIDTH;
     }
 }
