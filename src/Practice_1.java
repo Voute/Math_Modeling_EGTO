@@ -3,6 +3,7 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferStrategy;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -27,12 +28,15 @@ public class Practice_1
     double Vsr = 0; // выборочная средняя
     double Vdisp = 0;   // выборочная дисперсия
     Double[] x = new Double[size];
+    Map<Integer, Raspr> x2 = new HashMap<>();
+    ArrayList<Interval> intervals2 = new ArrayList<>();
     int sizeIntervals = 10;
     String[][] tableValues_13 = new String[11][3];
     double[] chartValues = new double[sizeIntervals];
     Interval[] intervals;
     Map<Double, Integer> frequency = new HashMap<Double, Integer>();
     ArrayList<JFrame> frames = new ArrayList<JFrame>();
+    ArrayList<Double> generated_2 = new ArrayList<>();
 
     Practice_1()
     {
@@ -320,6 +324,52 @@ public class Practice_1
 //        Interval[] intervals
     }
 
+    public void task_2_1()
+    {
+//        xi	5	7	17	19	21	25	55
+//        pi	0.01	0.05	0.3	0.3	0.3	0.02	0.02
+
+        x2.put(0,new Raspr(5, 0.01d));
+        x2.put(1,new Raspr(7, 0.05d));
+        x2.put(2,new Raspr(17, 0.3d));
+        x2.put(3,new Raspr(19, 0.3d));
+        x2.put(4,new Raspr(21, 0.3d));
+        x2.put(5,new Raspr(25, 0.02d));
+        x2.put(6,new Raspr(55, 0.02d));
+
+        System.out.println("intervals:");
+        double prevLte = 0d;
+        for (int i = 0; i < x2.size(); i++)
+        {
+            intervals2.add(new Interval(prevLte, x2.get(i).p + prevLte));
+            prevLte += x2.get(i).p;
+            System.out.println("[" + x2.get(i).x + "]" + " from " + intervals2.get(i).gr + " to " + intervals2.get(i).lte);
+        }
+
+        System.out.println("generated values:");
+        for (int i = 0; i < 10; i++)
+        {
+            int value = (int)(Math.random()*100);
+            generated_2.add(value / 100d);
+            System.out.println(value / 100d);
+        }
+
+        ArrayList<Integer> values2 = new ArrayList<Integer>();
+
+        System.out.println("after mapping values:");
+        for (int i = 0; i < generated_2.size(); i++)
+        {
+            for (int n = 0; n < intervals2.size(); n++)
+            {
+                if (intervals2.get(n).check(generated_2.get(i)))
+                {
+                    values2.add(x2.get(n).x);
+                    System.out.println(x2.get(n).x);
+                }
+            }
+        }
+    }
+
     private class Interval
     {
         double gr;
@@ -333,14 +383,30 @@ public class Practice_1
             count = 0;
         }
 
-        void check(double n)
+        boolean check(double n)
         {
-            if (n > gr && n <= lte) count++;
+            if (n > gr && n <= lte) {
+                count++;
+                return true;
+            }
+            return false;
+
         }
 
         double getCh(int size)
         {
             return count/(double)size;
+        }
+    }
+    private class Raspr
+    {
+        int x;
+        double p;
+
+        Raspr(int x, double p)
+        {
+            this.x = x;
+            this.p = p;
         }
     }
 }
