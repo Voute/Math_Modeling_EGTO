@@ -5,7 +5,7 @@ public class Chart extends Canvas
     final Color background = Color.BLACK;
     int x0, y0;
     final int BAR_WIDTH = 10;
-    final double X_FACTOR = 0.1d;
+    final double X_FACTOR = 1d;
     final double Y_FACTOR = 100;
     int nextBarX = 0;
 
@@ -13,6 +13,7 @@ public class Chart extends Canvas
     {
         super();
         setSize(width, height);
+        setPreferredSize(new Dimension(width, height));
         setBackground(background);
         createBufferStrategy(1);
 

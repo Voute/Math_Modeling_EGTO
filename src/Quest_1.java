@@ -1,4 +1,5 @@
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -24,6 +25,9 @@ public class Quest_1
     {
         task_1_0();
         task_1_1();
+        task_1_2();
+        task_1_3();
+        task_1_4();
 
         for (JButton button :openTaskButtons
              ) {
@@ -38,7 +42,12 @@ public class Quest_1
 
     private void task_1_0()
     {
+        String title = "Generated Values";
+
         generatedValues_1 = Calculator.generateNumbers();
+        EFrame frame = EFrame.createListFrame(title, generatedValues_1, 100, 500);
+
+        createOpenTaskButton(title, frame);
     }
 
     private void task_1_1()
@@ -53,6 +62,65 @@ public class Quest_1
 
         area.appendln("M{X} = " + mathExpectation);
         area.append("V srednyaya = " + selectiveAverage);
+
+        createOpenTaskButton(title, frame);
+    }
+
+    private void task_1_2()
+    {
+        String title = "Task 1.2";
+        EFrame frame = EFrame.createTextFrame(title, 250, 100);
+
+        TextArea area = (TextArea)frame.coreComponent;
+
+        double dispersion = Calculator.calculateDispersion(generatedValues_1);
+        double selectiveDispersion = Calculator.calculateSelectiveDispersion(generatedValues_1);
+
+        area.appendln("D{X} = " + dispersion);
+        area.append("V dispersiya = " + selectiveDispersion);
+
+        createOpenTaskButton(title, frame);
+    }
+
+    private void task_1_3()
+    {
+        String title = "Task 1.3";
+
+        FrequencyTable freqTable = FrequencyTable.getInstance(generatedValues_1);
+        EFrame frame = EFrame.createTableFrame(title, freqTable, 300, 300);
+
+        createOpenTaskButton(title, frame);
+    }
+
+    private void task_1_4()
+    {
+        String title = "Task 1.4";
+
+        FrequencyTable freqTable = FrequencyTable.getInstance(generatedValues_1);
+        Interval[] intervals = freqTable.intervals;
+        Object[] chartValues = freqTable.getTableData(1);
+
+        Chart chart = new Chart(500, 500);
+
+        DrawAction action = new DrawAction() {
+            @Override
+            public void draw(Graphics gr) {
+//                gr.setColor(Color.WHITE);
+//                gr.fillRect(50, 50, 100, 100);
+//                gr.drawRect(50,50,50,50);
+
+                // draw initial lines
+                chart.drawInitialLines(gr, 10);
+                for (int n = 0; n < chartValues.length; n++) {
+                    chart.drawBar(gr, (int)chartValues[n], intervals[0].gr);
+                }
+//                chart.drawBar();
+            }
+        };
+
+
+        EFrame frame = EFrame.createCanvasFrame(title, action, chart, 600, 600);
+
 
         createOpenTaskButton(title, frame);
     }

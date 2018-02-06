@@ -10,7 +10,7 @@ public class Math_Modeling_EGTO
 //
 //        pr1.task_1_4();
 //        pr1.task_2_1();
-// ;
+ ;
 //        Practice_1.task_1n();
 
 

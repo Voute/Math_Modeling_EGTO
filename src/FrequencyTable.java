@@ -9,7 +9,7 @@ public class FrequencyTable extends JTable
     Interval[] intervals;
     Object[][] tableValues; // 0 - String, 1 - Integer, 2 - Double
 
-    public FrequencyTable getInstance(Double[] array)
+    public static  FrequencyTable getInstance(Double[] array)
     {
         int size = array.length;
         Interval[] intervals = generateIntervals(array);
@@ -61,7 +61,7 @@ public class FrequencyTable extends JTable
             sum2 += intervals[n].getCh(arraySize);
         }
 
-        tableValues[10][1] = "total";
+        tableValues[10][0] = "total";
         tableValues[10][1] = sum;
         tableValues[10][2] = sum2;
 
@@ -70,7 +70,7 @@ public class FrequencyTable extends JTable
 
     public Object[] getTableData(int column)
     {
-        int size = tableValues.length;
+        int size  = tableValues.length - 1; //- 1 due to total row
         Object[] returnArray = new Object[size];
 
         for (int i = 0; i < size; i++)

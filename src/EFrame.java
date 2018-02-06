@@ -32,7 +32,7 @@ public class EFrame extends JFrame
 //        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
         setContentPane(panel);
         coreComponent = panel;
@@ -80,14 +80,19 @@ public class EFrame extends JFrame
         Dimension size = new Dimension(100, 600);
         list.setSize(size);
         list.setPreferredSize(size);
+//        list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+//        list.setSelectedIndex(0);
+//        list.addListSelectionListener(this);
+//        list.setVisibleRowCount(5);
         JScrollPane pane = new JScrollPane(list);
-        pane.setSize(size);
-        pane.setPreferredSize(size);
+        pane.getVerticalScrollBar().setBlockIncrement(500);
+//        pane.setSize(size);
+//        pane.setPreferredSize(size);
 //        frame.getContentPane().add(pane);
 
 //        addTask(title, frame);
 
-        EFrame frame = new EFrame(title, width, height, list);
+        EFrame frame = new EFrame(title, width, height, pane);
 
         return frame;
     }
@@ -95,7 +100,7 @@ public class EFrame extends JFrame
     public static EFrame createCanvasFrame(String title, DrawAction action, Chart chart, int width, int height)
     {
 //        JFrame frame = createFrame(title, width, height);
-        EFrame frame = new EFrame(title, width, height, null);
+        EFrame frame = new EFrame(title, width, height);
 
 //        final Canvas canvas = new Canvas();
 //        canvas.setSize(700, 700);
@@ -128,7 +133,7 @@ public class EFrame extends JFrame
             }
         });
 
-        frame.add(but);
+        frame.add(but, BorderLayout.EAST);
         frame.repaint();
         frame.setVisible(false);
 
