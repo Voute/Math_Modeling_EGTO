@@ -1,16 +1,38 @@
+import javax.swing.*;
+
 /**
  * Created by egto1016 on 05.02.2018.
  */
-public class FrequencyTable
+public class FrequencyTable extends JTable
 {
-
+    static final int sizeIntervals = 10;
     Interval[] intervals;
-    int sizeIntervals = 10;
     Object[][] tableValues; // 0 - String, 1 - Integer, 2 - Double
 
-    public FrequencyTable(Double[] array)
+    public FrequencyTable getInstance(Double[] array)
     {
-        intervals = generateIntervals(sizeIntervals);
+        int size = array.length;
+        Interval[] intervals = generateIntervals(array);
+        String[] tableColumns = {"Interval", "Count", "Frequency"};
+        Object[][] tableValues = fillTableValues(intervals, size);
+
+        FrequencyTable table = new FrequencyTable(tableValues, tableColumns, intervals);
+
+        return table;
+    }
+
+    private FrequencyTable(Object[][] tableValues, Object[] columns, Interval[] intervals)
+    {
+        super(tableValues, columns);
+        this.intervals = intervals;
+        this.tableValues = tableValues;
+    }
+
+    static private Interval[] generateIntervals(Double[] array)
+    {
+        Interval[] intervals;
+
+        intervals = generateEmptyIntervals();
         int size = array.length;
 
         // filling intervals with frequency
@@ -20,6 +42,13 @@ public class FrequencyTable
             }
         }
 
+        return intervals;
+    }
+
+    static private Object[][] fillTableValues(Interval[] intervals, int arraySize)
+    {
+        Object[][] tableValues; // 0 - String, 1 - Integer, 2 - Double
+
         // filling table values
         tableValues = new Object[sizeIntervals + 1][3];
         int sum = 0;
@@ -27,14 +56,16 @@ public class FrequencyTable
         for (int n = 0; n < sizeIntervals; n++) {
             tableValues[n][0] = new String(intervals[n].gr + " to " + intervals[n].lte);
             tableValues[n][1] = intervals[n].count;
-            tableValues[n][2] = intervals[n].getCh(size);
+            tableValues[n][2] = intervals[n].getCh(arraySize);
             sum += intervals[n].count;
-            sum2 += intervals[n].getCh(size);
+            sum2 += intervals[n].getCh(arraySize);
         }
 
         tableValues[10][1] = "total";
         tableValues[10][1] = sum;
         tableValues[10][2] = sum2;
+
+        return tableValues;
     }
 
     public Object[] getTableData(int column)
@@ -50,14 +81,9 @@ public class FrequencyTable
         return returnArray;
     }
 
-    public Object[][] getTableData()
+    private static Interval[] generateEmptyIntervals()
     {
-        return tableValues;
-    }
-
-    private Interval[] generateIntervals(int size)
-    {
-        Interval[] returnArray = new Interval[size];
+        Interval[] returnArray = new Interval[10];
 
         returnArray[0] = new Interval(0d, 0.1d);
         returnArray[1] = new Interval(0.1d, 0.2d);

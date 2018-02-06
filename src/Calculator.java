@@ -5,7 +5,7 @@ import javax.swing.*;
  */
 public class Calculator
 {
-    public Double[] generateNumbers()
+    public static Double[] generateNumbers()
     {
         int size = 1000;    // количество чисел
         double M = 7d;
@@ -23,7 +23,7 @@ public class Calculator
         return x;
     }
 
-    public double calculateMathExpectation(Double[] array)
+    public static double calculateMathExpectation(Double[] array)
     {
         double expec = 0;  // математическое ожидание
         double v = 1d / (double)array.length;
@@ -38,7 +38,7 @@ public class Calculator
         return expec;
     }
 
-    public double calculateDispersion(Double[] array)
+    public static double calculateDispersion(Double[] array)
     {
         double disp = 0;   // дисперсия
         double v = 1d / (double)array.length;
@@ -56,7 +56,7 @@ public class Calculator
         return disp;
     }
 
-    public double calculateSelectiveAverage(Double[] array)
+    public static double calculateSelectiveAverage(Double[] array)
     {
         double average = 0; // выборочная средняя
         int size = array.length;
@@ -71,7 +71,7 @@ public class Calculator
     }
 
 
-    public double calculateSelectiveDispersion(Double[] array)
+    public static double calculateSelectiveDispersion(Double[] array)
     {
         double Vdisp = 0;   // выборочная дисперсия
         int size = array.length;
@@ -90,12 +90,12 @@ public class Calculator
 
     }
 
-    private double increaseMo(double Mo, double n, double v)
+    private static double increaseMo(double Mo, double n, double v)
     {
         return Mo + n * v;
     }
 
-    double increaseD(double D, double n, double v)
+    private static double increaseD(double D, double n, double v)
     {
         return D + Math.pow(n, 2) * v;
     }
