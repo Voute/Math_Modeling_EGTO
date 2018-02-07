@@ -11,12 +11,31 @@ public class Quest_1
 {
     final EFrame rootFrame;
     final ArrayList<JButton> openTaskButtons;
+    final JTextField fieldM;
+    final JTextField fieldm;
 
     Double[] generatedValues_1;
 
     public Quest_1()
     {
-        rootFrame = EFrame.createSimpleFrame("Practice 1. Tasks", 100, 400);
+        rootFrame = EFrame.createSimpleFrame("Practice 1. Tasks", 250, 400);
+
+        JLabel labelHeading = new JLabel("Generator parameters:");
+        JLabel labelM = new JLabel("M:");
+        JLabel labelm = new JLabel("m:");
+
+        fieldM = new JTextField();
+        fieldM.setText("7");
+        fieldM.setEditable(false);
+        fieldm = new JTextField();
+        fieldm.setText("10");
+        fieldm.setEditable(false);
+
+        rootFrame.coreComponent.add(labelHeading);
+        rootFrame.coreComponent.add(labelM);
+        rootFrame.coreComponent.add(fieldM);
+        rootFrame.coreComponent.add(labelm);
+        rootFrame.coreComponent.add(fieldm);
         rootFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         openTaskButtons = new ArrayList<>();
     }
@@ -28,6 +47,8 @@ public class Quest_1
         task_1_2();
         task_1_3();
         task_1_4();
+
+        task_2_0();
 
         for (JButton button :openTaskButtons
              ) {
@@ -42,9 +63,11 @@ public class Quest_1
 
     private void task_1_0()
     {
-        String title = "Generated Values";
+        String title = "1. Show generated values";
 
-        generatedValues_1 = Calculator.generateNumbers();
+        double M = Double.parseDouble(fieldM.getText());
+        double m = Double.parseDouble(fieldm.getText());
+        generatedValues_1 = Calculator.generateNumbers(M, m);
         EFrame frame = EFrame.createListFrame(title, generatedValues_1, 100, 500);
 
         createOpenTaskButton(title, frame);
@@ -121,7 +144,58 @@ public class Quest_1
 
         EFrame frame = EFrame.createCanvasFrame(title, action, chart, 600, 600);
 
+        createOpenTaskButton(title, frame);
+    }
 
+    private void task_2_0()
+    {
+        Object[][] distrArray = new Object[7][2];
+
+        distrArray[0][0] = (int)5;
+        distrArray[0][1] = (double)0.01d;
+
+        distrArray[1][0] = (int)7;
+        distrArray[1][1] = (double)0.05d;
+
+        distrArray[2][0] = (int)17;
+        distrArray[2][1] = (double)0.3d;
+
+        distrArray[3][0] = (int)19;
+        distrArray[3][1] = (double)0.3d;
+
+        distrArray[4][0] = (int)21;
+        distrArray[4][1] = (double)0.3d;
+
+        distrArray[5][0] = (int)25;
+        distrArray[5][1] = (double)0.02d;
+
+        distrArray[6][0] = (int)55;
+        distrArray[6][1] = (double)0.02d;
+
+        Object[][] distrArrayFrame = new Object[distrArray.length + 1][distrArray[0].length];
+        distrArrayFrame[0][0] = "xi";
+        distrArrayFrame[0][1] = "pi";
+        for (int i = 1; i < distrArrayFrame.length; i++ )
+        {
+            for (int n = 0; n < distrArrayFrame[0].length; n++ ) {
+                distrArrayFrame[i][n] = distrArray[i-1][n];
+            }
+        }
+
+        System.out.println(distrArrayFrame[0].length);
+
+        for (int i = 0; i < distrArrayFrame.length; i++ )
+        {
+            for (int n = 0; n < distrArrayFrame[0].length; n++ ) {
+                System.out.println("i: " + i + " n: " + n + " - " + distrArrayFrame[i][n]);
+            }
+        }
+
+        String title = "Таблица распределений";
+        String[] columns = {"key", "1", "2", "3", "4", "5", "6"};
+
+        JTable distrTableFrame = new JTable(distrArrayFrame, columns);
+        EFrame frame = EFrame.createTableFrame(title, distrTableFrame, 800, 800);
         createOpenTaskButton(title, frame);
     }
 

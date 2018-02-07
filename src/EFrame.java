@@ -57,7 +57,7 @@ public class EFrame extends JFrame
         return frame;
     }
 
-    public static EFrame createTableFrame(String title, FrequencyTable table, int width, int height)
+    public static EFrame createTableFrame(String title, JTable table, int width, int height)
     {
 //        JFrame frame = createFrame(title, width, height);
 

@@ -5,11 +5,11 @@ import javax.swing.*;
  */
 public class Calculator
 {
-    public static Double[] generateNumbers()
+    public static Double[] generateNumbers(double M, double m)
     {
         int size = 1000;    // количество чисел
-        double M = 7d;
-        double m = 7d;
+//        double M = 7d;
+//        double m = 7d;
         Double[] x = new Double[size];
 
         x[0] = Math.pow(2, -m);
