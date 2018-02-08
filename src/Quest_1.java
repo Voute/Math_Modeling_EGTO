@@ -149,53 +149,39 @@ public class Quest_1
 
     private void task_2_0()
     {
-        Object[][] distrArray = new Object[7][2];
+        Object[][] distrArray = new Object[2][7];
 
         distrArray[0][0] = (int)5;
-        distrArray[0][1] = (double)0.01d;
-
-        distrArray[1][0] = (int)7;
+        distrArray[1][0] = (double)0.01d;
+        distrArray[0][1] = (int)7;
         distrArray[1][1] = (double)0.05d;
+        distrArray[0][2] = (int)17;
+        distrArray[1][2] = (double)0.3d;
+        distrArray[0][3] = (int)19;
+        distrArray[1][3] = (double)0.3d;
+        distrArray[0][4] = (int)21;
+        distrArray[1][4] = (double)0.3d;
+        distrArray[0][5] = (int)25;
+        distrArray[1][5] = (double)0.02d;
+        distrArray[0][6] = (int)55;
+        distrArray[1][6] = (double)0.02d;
 
-        distrArray[2][0] = (int)17;
-        distrArray[2][1] = (double)0.3d;
-
-        distrArray[3][0] = (int)19;
-        distrArray[3][1] = (double)0.3d;
-
-        distrArray[4][0] = (int)21;
-        distrArray[4][1] = (double)0.3d;
-
-        distrArray[5][0] = (int)25;
-        distrArray[5][1] = (double)0.02d;
-
-        distrArray[6][0] = (int)55;
-        distrArray[6][1] = (double)0.02d;
-
-        Object[][] distrArrayFrame = new Object[distrArray.length + 1][distrArray[0].length];
+        Object[][] distrArrayFrame = new Object[distrArray.length][distrArray[0].length + 1];
         distrArrayFrame[0][0] = "xi";
-        distrArrayFrame[0][1] = "pi";
-        for (int i = 1; i < distrArrayFrame.length; i++ )
-        {
-            for (int n = 0; n < distrArrayFrame[0].length; n++ ) {
-                distrArrayFrame[i][n] = distrArray[i-1][n];
-            }
-        }
-
-        System.out.println(distrArrayFrame[0].length);
-
+        distrArrayFrame[1][0] = "pi";
         for (int i = 0; i < distrArrayFrame.length; i++ )
         {
-            for (int n = 0; n < distrArrayFrame[0].length; n++ ) {
-                System.out.println("i: " + i + " n: " + n + " - " + distrArrayFrame[i][n]);
+            for (int n = 1; n < distrArrayFrame[0].length; n++ ) {
+                distrArrayFrame[i][n] =
+                        distrArray[i][n-1];
             }
         }
 
-        String title = "Таблица распределений";
-        String[] columns = {"key", "1", "2", "3", "4", "5", "6"};
+        String title = "2. Таблица распределений";
+        String[] columns = {"key", "1", "2", "3", "4", "5", "6", "7"};
 
         JTable distrTableFrame = new JTable(distrArrayFrame, columns);
-        EFrame frame = EFrame.createTableFrame(title, distrTableFrame, 800, 800);
+        EFrame frame = EFrame.createTableFrame(title, distrTableFrame, 500, 100);
         createOpenTaskButton(title, frame);
     }
 
