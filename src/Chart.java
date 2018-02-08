@@ -25,7 +25,7 @@ public class Chart extends Canvas
     {
         gr.setColor(Color.WHITE);
         gr.drawString("x0 = " + x0 + " y0 = " + y0, 400,400);
-//        gr.drawLine(10,10,50,50);
+//        gre.drawLine(10,10,50,50);
         gr.drawLine(0, y0, getWidth(), y0);  // x axis
         gr.drawLine(x0, 0, x0, getHeight());  // y axis
 
@@ -37,9 +37,9 @@ public class Chart extends Canvas
         gr.drawString("1/L", x0 - 30, Ly);
 //        System.out.println(Ly);
 //        System.out.println("one L = " + oneL);
-//        gr.drawLine(x0 - 10, Ly, getWidth(), Ly);
+//        gre.drawLine(x0 - 10, Ly, getWidth(), Ly);
 
-//        gr.fillRect(10,10,50,50);
+//        gre.fillRect(10,10,50,50);
     }
 
     private int factorX(double i)

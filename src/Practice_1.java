@@ -3,7 +3,6 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.image.BufferStrategy;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -270,7 +269,7 @@ public class Practice_1
         int sum = 0;
         double sum2 = 0;
          for (int n = 0; n < sizeIntervals; n++) {
-             tableValues_13[n][0] = intervals[n].gr + " to " + intervals[n].lte;
+             tableValues_13[n][0] = intervals[n].gre + " to " + intervals[n].lt;
              tableValues_13[n][1] = Integer.toString(intervals[n].count);
              tableValues_13[n][2] = Double.toString(intervals[n].getCh(size));
              sum += intervals[n].count;
@@ -300,14 +299,14 @@ public class Practice_1
         DrawAction action = new DrawAction() {
             @Override
             public void draw(Graphics gr) {
-//                gr.setColor(Color.WHITE);
-//                gr.fillRect(50, 50, 100, 100);
-//                gr.drawRect(50,50,50,50);
+//                gre.setColor(Color.WHITE);
+//                gre.fillRect(50, 50, 100, 100);
+//                gre.drawRect(50,50,50,50);
 
                 // draw initial lines
                 chart.drawInitialLines(gr, sizeIntervals);
                 for (int n = 0; n < chartValues.length; n++) {
-                    chart.drawBar(gr, chartValues[n], intervals[0].gr);
+                    chart.drawBar(gr, chartValues[n], intervals[0].gre);
                 }
 //                chart.drawBar();
             }
@@ -316,13 +315,13 @@ public class Practice_1
 
 //        Canvas canvas = (Canvas)frame.getContentPane().getComponent(0);
 //        BufferStrategy bs = canvas.getBufferStrategy();
-//        Graphics gr = bs.getDrawGraphics();
-//        gr.setColor(Color.BLACK);
-//        gr.fillRect(50, 50, 100, 100);
-//        gr.drawRect(50,50,50,50);
+//        Graphics gre = bs.getDrawGraphics();
+//        gre.setColor(Color.BLACK);
+//        gre.fillRect(50, 50, 100, 100);
+//        gre.drawRect(50,50,50,50);
 //        bs.show();
 
-//        frame.paint(gr);
+//        frame.paint(gre);
 //        Interval[] intervals
     }
 
@@ -345,7 +344,7 @@ public class Practice_1
         {
             intervals2.add(new Interval(prevLte, x2.get(i).p + prevLte));
             prevLte += x2.get(i).p;
-            System.out.println("[" + x2.get(i).x + "]" + " from " + intervals2.get(i).gr + " to " + intervals2.get(i).lte);
+            System.out.println("[" + x2.get(i).x + "]" + " from " + intervals2.get(i).gre + " to " + intervals2.get(i).lt);
         }
 
         System.out.println("generated values:");

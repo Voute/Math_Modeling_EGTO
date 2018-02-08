@@ -9,7 +9,14 @@ public class ETable extends JTable
     Interval[] intervals;
     Object[][] tableValues; // 0 - String, 1 - Integer, 2 - Double
 
-    public static ETable getInstance(Double[] array)
+    private ETable(Object[][] tableValues, Object[] columns, Interval[] intervals)
+    {
+        super(tableValues, columns);
+        this.intervals = intervals;
+        this.tableValues = tableValues;
+    }
+
+    public static ETable getFrequencyInstance(Double[] array)
     {
         int size = array.length;
         Interval[] intervals = generateIntervals(array);
@@ -21,11 +28,66 @@ public class ETable extends JTable
         return table;
     }
 
-    private ETable(Object[][] tableValues, Object[] columns, Interval[] intervals)
+    public static ETable getDistributionInstance()
     {
-        super(tableValues, columns);
-        this.intervals = intervals;
-        this.tableValues = tableValues;
+//        int size = array.length;
+//        Interval[] intervals = generateIntervals(array);
+        String[] tableColumns = {"key", "1", "2", "3", "4", "5", "6", "7"};
+//        Object[][] tableValues = fillTableValues(intervals, size);
+        Object[][] tableValues = generateDistrArray();
+
+        Object[][] distrArrayTable = new Object[tableValues.length][tableValues[0].length + 1];
+        distrArrayTable[0][0] = "xi";
+        distrArrayTable[1][0] = "pi";
+        for (int i = 0; i < distrArrayTable.length; i++ )
+        {
+            for (int n = 1; n < distrArrayTable[0].length; n++ ) {
+                distrArrayTable[i][n] = tableValues[i][n-1];
+            }
+        }
+
+        ETable table = new ETable(distrArrayTable, tableColumns, null);
+
+        return table;
+    }
+
+    public static ETable getDistributionValuesInstance(Object[] values1, Double[] values2)
+    {
+        String[] tableColumns = {"genValue", "distrValue"};
+        int size = values1.length;
+        Object[][] tableValues = new Object[size][2];
+
+        for (int i = 0; i < size; i++)
+        {
+            tableValues[i][0] = values1[i];
+            tableValues[i][1] = values2[i];
+        }
+
+        ETable table = new ETable(tableValues, tableColumns, null);
+
+        return table;
+    }
+
+    private static Object[][] generateDistrArray()
+    {
+        Object[][] array = new Object[2][7];
+
+        array[0][0] = 5d;
+        array[1][0] = 0.01d;
+        array[0][1] = 7d;
+        array[1][1] = 0.05d;
+        array[0][2] = 17d;
+        array[1][2] = 0.3d;
+        array[0][3] = 19d;
+        array[1][3] = 0.3d;
+        array[0][4] = 21d;
+        array[1][4] = 0.3d;
+        array[0][5] = 25d;
+        array[1][5] = 0.02d;
+        array[0][6] = 55d;
+        array[1][6] = 0.02d;
+
+        return array;
     }
 
     static private Interval[] generateIntervals(Double[] array)
@@ -54,7 +116,7 @@ public class ETable extends JTable
         int sum = 0;
         double sum2 = 0;
         for (int n = 0; n < sizeIntervals; n++) {
-            tableValues[n][0] = new String(intervals[n].gr + " to " + intervals[n].lte);
+            tableValues[n][0] = new String(intervals[n].gre + " to " + intervals[n].lt);
             tableValues[n][1] = intervals[n].count;
             tableValues[n][2] = intervals[n].getCh(arraySize);
             sum += intervals[n].count;

@@ -23,26 +23,18 @@ public class Calculator
         return x;
     }
 
-    public static Object[][] generateDistrArray()
+    public static Double[] generateNumbers(int size)
     {
-        Object[][] array = new Object[2][7];
+        Double[] resultArray = new Double[size];
 
-        array[0][0] = (int)5;
-        array[1][0] = (double)0.01d;
-        array[0][1] = (int)7;
-        array[1][1] = (double)0.05d;
-        array[0][2] = (int)17;
-        array[1][2] = (double)0.3d;
-        array[0][3] = (int)19;
-        array[1][3] = (double)0.3d;
-        array[0][4] = (int)21;
-        array[1][4] = (double)0.3d;
-        array[0][5] = (int)25;
-        array[1][5] = (double)0.02d;
-        array[0][6] = (int)55;
-        array[1][6] = (double)0.02d;
+        for (int i = 0; i < size; i++)
+        {
+            int value = (int)(Math.random()*100);
+            resultArray[i] = value / 100d;
+//            System.out.println(value / 100d);
+        }
 
-        return array;
+        return resultArray;
     }
 
     public static double calculateMathExpectation(Double[] array)

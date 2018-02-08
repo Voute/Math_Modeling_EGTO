@@ -15,6 +15,10 @@ public class Quest_1
     final JTextField fieldm;
 
     Double[] generatedValues_1;
+    Double[] generatedValues_2;
+    Double[] generatedValues_2d;
+    Object[][] distributionValues_2;
+    DiscreteInterval[] discreteIntervals;
 
     public Quest_1()
     {
@@ -49,6 +53,7 @@ public class Quest_1
         task_1_4();
 
         task_2_0();
+        task_2_1();
 
         for (JButton button :openTaskButtons
              ) {
@@ -109,7 +114,7 @@ public class Quest_1
     {
         String title = "Task 1.3";
 
-        ETable freqTable = ETable.getInstance(generatedValues_1);
+        ETable freqTable = ETable.getFrequencyInstance(generatedValues_1);
         EFrame frame = EFrame.createTableFrame(title, freqTable, 300, 300);
 
         createOpenTaskButton(title, frame);
@@ -119,7 +124,7 @@ public class Quest_1
     {
         String title = "Task 1.4";
 
-        ETable freqTable = ETable.getInstance(generatedValues_1);
+        ETable freqTable = ETable.getFrequencyInstance(generatedValues_1);
         Interval[] intervals = freqTable.intervals;
         Object[] chartValues = freqTable.getTableData(1);
 
@@ -128,16 +133,12 @@ public class Quest_1
         DrawAction action = new DrawAction() {
             @Override
             public void draw(Graphics gr) {
-//                gr.setColor(Color.WHITE);
-//                gr.fillRect(50, 50, 100, 100);
-//                gr.drawRect(50,50,50,50);
 
                 // draw initial lines
                 chart.drawInitialLines(gr, 10);
                 for (int n = 0; n < chartValues.length; n++) {
-                    chart.drawBar(gr, (int)chartValues[n], intervals[0].gr);
+                    chart.drawBar(gr, (int)chartValues[n], intervals[0].gre);
                 }
-//                chart.drawBar();
             }
         };
 
@@ -149,24 +150,38 @@ public class Quest_1
 
     private void task_2_0()
     {
-        Object[][] distrArray = Calculator.generateDistrArray();
-
-        Object[][] distrArrayFrame = new Object[distrArray.length][distrArray[0].length + 1];
-        distrArrayFrame[0][0] = "xi";
-        distrArrayFrame[1][0] = "pi";
-        for (int i = 0; i < distrArrayFrame.length; i++ )
-        {
-            for (int n = 1; n < distrArrayFrame[0].length; n++ ) {
-                distrArrayFrame[i][n] =
-                        distrArray[i][n-1];
-            }
-        }
-
-        String title = "2. Таблица распределений";
+        String distrTitle = "2. Таблица распределений";
         String[] columns = {"key", "1", "2", "3", "4", "5", "6", "7"};
 
-        JTable distrTableFrame = new JTable(distrArrayFrame, columns);
-        EFrame frame = EFrame.createTableFrame(title, distrTableFrame, 500, 100);
+        ETable distrFrameTable = ETable.getDistributionInstance();
+        distributionValues_2 = distrFrameTable.tableValues;
+        EFrame distrFrame = EFrame.createTableFrame(distrTitle, distrFrameTable, 500, 100);
+        createOpenTaskButton(distrTitle, distrFrame);
+
+        generatedValues_2 = Calculator.generateNumbers(1000);
+        discreteIntervals = DiscreteInterval.convertFromDistrArray(distributionValues_2);
+        generatedValues_2d = fillDistrValues(generatedValues_2, discreteIntervals);
+
+        String distrValuesTitle = "2. Таблица смоделированных значений";
+        ETable distrValuesFrameTable = ETable.getDistributionValuesInstance(generatedValues_2, generatedValues_2d);
+        EFrame distrValuesFrame = EFrame.createTableFrame(distrValuesTitle, distrValuesFrameTable, 100, 800);
+
+        createOpenTaskButton(distrValuesTitle, distrValuesFrame);
+    }
+
+    private void task_2_1()
+    {
+        String title = "Task 2.1";
+        EFrame frame = EFrame.createTextFrame(title, 250, 100);
+
+        TextArea area = (TextArea) frame.coreComponent;
+
+        double mathExpectation = Calculator.calculateMathExpectation(generatedValues_2d);
+        double selectiveAverage = Calculator.calculateSelectiveAverage(generatedValues_2d);
+
+        area.appendln("M{X} = " + mathExpectation);
+        area.append("V srednyaya = " + selectiveAverage);
+
         createOpenTaskButton(title, frame);
     }
 
@@ -175,6 +190,32 @@ public class Quest_1
         JButton button = new JButton(title);
         button.addActionListener(action);
         openTaskButtons.add(button);
+    }
+
+    private void task_2_2()
+    {
+
+    }
+
+    private Double[] fillDistrValues(Double[] array, DiscreteInterval[] intervals)
+    {
+        int size = array.length;
+        Double[] returnArray = new Double[size];
+
+        for (int i = 0; i < size; i++)
+        {
+            intervalsLoop:
+            for (DiscreteInterval interval : intervals)
+            {
+                if (interval.check(array[i]))
+                {
+                    returnArray[i] = interval.distrValue;
+                    break intervalsLoop;
+                }
+            }
+        }
+
+        return returnArray;
     }
 
     private void createOpenTaskButton(String title, EFrame frame) {
