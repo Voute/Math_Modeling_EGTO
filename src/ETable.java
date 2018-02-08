@@ -3,25 +3,25 @@ import javax.swing.*;
 /**
  * Created by egto1016 on 05.02.2018.
  */
-public class FrequencyTable extends JTable
+public class ETable extends JTable
 {
     static final int sizeIntervals = 10;
     Interval[] intervals;
     Object[][] tableValues; // 0 - String, 1 - Integer, 2 - Double
 
-    public static  FrequencyTable getInstance(Double[] array)
+    public static ETable getInstance(Double[] array)
     {
         int size = array.length;
         Interval[] intervals = generateIntervals(array);
         String[] tableColumns = {"Interval", "Count", "Frequency"};
         Object[][] tableValues = fillTableValues(intervals, size);
 
-        FrequencyTable table = new FrequencyTable(tableValues, tableColumns, intervals);
+        ETable table = new ETable(tableValues, tableColumns, intervals);
 
         return table;
     }
 
-    private FrequencyTable(Object[][] tableValues, Object[] columns, Interval[] intervals)
+    private ETable(Object[][] tableValues, Object[] columns, Interval[] intervals)
     {
         super(tableValues, columns);
         this.intervals = intervals;

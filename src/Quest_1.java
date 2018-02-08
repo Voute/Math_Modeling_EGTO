@@ -109,7 +109,7 @@ public class Quest_1
     {
         String title = "Task 1.3";
 
-        FrequencyTable freqTable = FrequencyTable.getInstance(generatedValues_1);
+        ETable freqTable = ETable.getInstance(generatedValues_1);
         EFrame frame = EFrame.createTableFrame(title, freqTable, 300, 300);
 
         createOpenTaskButton(title, frame);
@@ -119,7 +119,7 @@ public class Quest_1
     {
         String title = "Task 1.4";
 
-        FrequencyTable freqTable = FrequencyTable.getInstance(generatedValues_1);
+        ETable freqTable = ETable.getInstance(generatedValues_1);
         Interval[] intervals = freqTable.intervals;
         Object[] chartValues = freqTable.getTableData(1);
 
@@ -149,22 +149,7 @@ public class Quest_1
 
     private void task_2_0()
     {
-        Object[][] distrArray = new Object[2][7];
-
-        distrArray[0][0] = (int)5;
-        distrArray[1][0] = (double)0.01d;
-        distrArray[0][1] = (int)7;
-        distrArray[1][1] = (double)0.05d;
-        distrArray[0][2] = (int)17;
-        distrArray[1][2] = (double)0.3d;
-        distrArray[0][3] = (int)19;
-        distrArray[1][3] = (double)0.3d;
-        distrArray[0][4] = (int)21;
-        distrArray[1][4] = (double)0.3d;
-        distrArray[0][5] = (int)25;
-        distrArray[1][5] = (double)0.02d;
-        distrArray[0][6] = (int)55;
-        distrArray[1][6] = (double)0.02d;
+        Object[][] distrArray = Calculator.generateDistrArray();
 
         Object[][] distrArrayFrame = new Object[distrArray.length][distrArray[0].length + 1];
         distrArrayFrame[0][0] = "xi";
