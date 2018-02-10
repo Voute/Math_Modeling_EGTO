@@ -187,13 +187,6 @@ public class Quest_1
         createOpenTaskButton(title, frame);
     }
 
-//    private void createOpenTaskButton(String title, ActionListener action)
-//    {
-//        JButton button = new JButton(title);
-//        button.addActionListener(action);
-//        openTaskButtons.add(button);
-//    }
-
     private void task_2_2()
     {
         String title = "Task 2.2";
@@ -237,19 +230,6 @@ public class Quest_1
                 chart.drawBar(gr, (int)chartValues[n], intervals[0].gre, n);
             }
         };
-
-//        DrawAction action = new DrawAction() {
-//            @Override
-//            public void draw(Graphics gr) {
-//
-//                // draw initial lines
-//                chart.drawInitialLines(gr, 10);
-//                for (int n = 0; n < chartValues.length; n++) {
-//                    chart.drawBar(gr, (int)chartValues[n], intervals[0].gre);
-//                }
-//            }
-//        };
-
 
         EFrame frame = EFrame.createCanvasFrame(title, action, chart, 600, 600);
 

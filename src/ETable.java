@@ -30,10 +30,7 @@ public class ETable extends JTable
 
     public static ETable getDistributionInstance()
     {
-//        int size = array.length;
-//        Interval[] intervals = generateIntervals(array);
         String[] tableColumns = {"key", "1", "2", "3", "4", "5", "6", "7"};
-//        Object[][] tableValues = fillTableValues(intervals, size);
         Object[][] tableValues = generateDistrArray();
 
         Object[][] distrArrayTable = new Object[tableValues.length][tableValues[0].length + 1];
