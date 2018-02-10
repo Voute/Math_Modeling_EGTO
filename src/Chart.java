@@ -7,7 +7,6 @@ public class Chart extends Canvas
     final int BAR_WIDTH = 10;
     final double X_FACTOR = 1d;
     final double Y_FACTOR = 100;
-    int nextBarX = 0;
 
     public Chart(int width, int height)
     {
@@ -52,16 +51,14 @@ public class Chart extends Canvas
     }
 
 
-    public void drawBar(Graphics gr, double height, double x)
+    public void drawBar(Graphics gr, double height, double x, int barId)
     {
-
         height = factorX(height);
         x = factorX(x);
         gr.setColor(Color.CYAN);
-        gr.fillRect(x0 + (int)x + nextBarX, y0 - (int)height, BAR_WIDTH, (int)height);
+        gr.fillRect(x0 + (int)x + BAR_WIDTH * barId, y0 - (int)height, BAR_WIDTH, (int)height);
         gr.setColor(Color.RED);
-        gr.drawRect(x0 + (int)x + nextBarX, y0 - (int)height, BAR_WIDTH, (int)height);
+        gr.drawRect(x0 + (int)x + BAR_WIDTH * barId, y0 - (int)height, BAR_WIDTH, (int)height);
         System.out.println("rect height = " + height + " rect x = " + x);
-        nextBarX += BAR_WIDTH;
     }
 }

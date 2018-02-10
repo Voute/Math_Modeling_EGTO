@@ -306,7 +306,7 @@ public class Practice_1
                 // draw initial lines
                 chart.drawInitialLines(gr, sizeIntervals);
                 for (int n = 0; n < chartValues.length; n++) {
-                    chart.drawBar(gr, chartValues[n], intervals[0].gre);
+//                    chart.drawBar(gr, chartValues[n], intervals[0].gre);
                 }
 //                chart.drawBar();
             }

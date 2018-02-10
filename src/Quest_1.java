@@ -22,7 +22,7 @@ public class Quest_1
 
     public Quest_1()
     {
-        rootFrame = EFrame.createSimpleFrame("Practice 1. Tasks", 250, 400);
+        rootFrame = EFrame.createSimpleFrame("Practice 1. Tasks", 250, 500);
 
         JLabel labelHeading = new JLabel("Generator parameters:");
         JLabel labelM = new JLabel("M:");
@@ -51,9 +51,11 @@ public class Quest_1
         task_1_2();
         task_1_3();
         task_1_4();
-
         task_2_0();
         task_2_1();
+        task_2_2();
+        task_2_3();
+        task_2_4();
 
         for (JButton button :openTaskButtons
              ) {
@@ -137,7 +139,7 @@ public class Quest_1
                 // draw initial lines
                 chart.drawInitialLines(gr, 10);
                 for (int n = 0; n < chartValues.length; n++) {
-                    chart.drawBar(gr, (int)chartValues[n], intervals[0].gre);
+                    chart.drawBar(gr, (int)chartValues[n], intervals[0].gre, n);
                 }
             }
         };
@@ -185,16 +187,73 @@ public class Quest_1
         createOpenTaskButton(title, frame);
     }
 
-    private void createOpenTaskButton(String title, ActionListener action)
-    {
-        JButton button = new JButton(title);
-        button.addActionListener(action);
-        openTaskButtons.add(button);
-    }
+//    private void createOpenTaskButton(String title, ActionListener action)
+//    {
+//        JButton button = new JButton(title);
+//        button.addActionListener(action);
+//        openTaskButtons.add(button);
+//    }
 
     private void task_2_2()
     {
+        String title = "Task 2.2";
+        EFrame frame = EFrame.createTextFrame(title, 250, 100);
 
+        TextArea area = (TextArea)frame.coreComponent;
+
+        double dispersion = Calculator.calculateDispersion(generatedValues_2d);
+        double selectiveDispersion = Calculator.calculateSelectiveDispersion(generatedValues_2d);
+
+        area.appendln("D{X} = " + dispersion);
+        area.append("V dispersiya = " + selectiveDispersion);
+
+        createOpenTaskButton(title, frame);
+    }
+
+
+    private void task_2_3()
+    {
+        String title = "Task 2.3";
+
+        ETable freqTable = ETable.getFrequencyInstance(generatedValues_2);
+        EFrame frame = EFrame.createTableFrame(title, freqTable, 300, 300);
+
+        createOpenTaskButton(title, frame);
+    }
+
+    private void task_2_4()
+    {
+        String title = "Task 2.4";
+
+        ETable freqTable = ETable.getFrequencyInstance(generatedValues_2);
+        Interval[] intervals = freqTable.intervals;
+        Object[] chartValues = freqTable.getTableData(1);
+
+        Chart chart = new Chart(500, 500);
+
+        DrawAction action = gr -> {
+            chart.drawInitialLines(gr, 10);
+            for (int n = 0; n < chartValues.length; n++) {
+                chart.drawBar(gr, (int)chartValues[n], intervals[0].gre, n);
+            }
+        };
+
+//        DrawAction action = new DrawAction() {
+//            @Override
+//            public void draw(Graphics gr) {
+//
+//                // draw initial lines
+//                chart.drawInitialLines(gr, 10);
+//                for (int n = 0; n < chartValues.length; n++) {
+//                    chart.drawBar(gr, (int)chartValues[n], intervals[0].gre);
+//                }
+//            }
+//        };
+
+
+        EFrame frame = EFrame.createCanvasFrame(title, action, chart, 600, 600);
+
+        createOpenTaskButton(title, frame);
     }
 
     private Double[] fillDistrValues(Double[] array, DiscreteInterval[] intervals)
