@@ -1,3 +1,5 @@
+package quest_1;
+
 import java.awt.*;
 
 public class Chart extends Canvas

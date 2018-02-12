@@ -1,3 +1,5 @@
+package quest_1;
+
 /**
  * Created by egto1016 on 08.02.2018.
  */

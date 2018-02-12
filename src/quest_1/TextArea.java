@@ -1,3 +1,5 @@
+package quest_1;
+
 import javax.swing.*;
 
 /**

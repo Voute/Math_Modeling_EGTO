@@ -1,3 +1,5 @@
+package quest_1;
+
 import javax.swing.*;
 
 /**
@@ -20,7 +22,7 @@ public class ETable extends JTable
     {
         int size = array.length;
         Interval[] intervals = generateIntervals(array);
-        String[] tableColumns = {"Interval", "Count", "Frequency"};
+        String[] tableColumns = {"quest_1.Interval", "Count", "Frequency"};
         Object[][] tableValues = fillTableValues(intervals, size);
 
         ETable table = new ETable(tableValues, tableColumns, intervals);
