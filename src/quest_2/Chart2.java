@@ -12,6 +12,7 @@ public class Chart2 extends Chart
 {
     int TRAIT_LENGTH = 6;
     int BAR_HEIGHT;
+    int POWER_SEC;
 
     Chart2(int width, int height)
     {
@@ -25,8 +26,33 @@ public class Chart2 extends Chart
         y0 = getHeight() - 50;
     }
 
+    public void zoomIn()
+    {
+        // 6 12 24
+        if (BAR_WIDTH < 24)
+        {
+            BAR_WIDTH *= 2;
+            BAR_HEIGHT *= 2;
+            POWER_SEC *= 2;
+        }
+
+    }
+
+    public void zoomOut()
+    {
+        // 6 12 24
+        if (BAR_WIDTH > 6)
+        {
+            BAR_WIDTH /= 2;
+            BAR_HEIGHT /= 2;
+            POWER_SEC /= 2;
+        }
+    }
+
     public void drawInitialLines(Graphics gr, int minutes)
     {
+        gr.setColor(Color.black);
+        gr.fillRect(0,0,getWidth(), getHeight());
         gr.setColor(Color.WHITE);
 //        gr.drawString("x0 = " + x0 + " y0 = " + y0, 400,400);
         gr.drawLine(0, y0, getWidth(), y0);  // x axis
@@ -114,6 +140,6 @@ public class Chart2 extends Chart
     {
         int mod = (int)( (n - (int)n) * 10 );
         int seconds = mod * 6; // 6 seconds are in 0.1 minute
-        return (int)(seconds / 10); // draw every 10 seconds
+        return (int)(seconds / 10) * POWER_SEC; // draw every 10 seconds
     }
 }

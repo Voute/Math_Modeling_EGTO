@@ -35,23 +35,6 @@ public class Quest_2
     public Quest_2()
     {
         rootFrame = EFrame.createSimpleFrame("Practice 2", 250, 500);
-
-//        JLabel labelHeading = new JLabel("Generator parameters:");
-//        JLabel labelM = new JLabel("M:");
-//        JLabel labelm = new JLabel("m:");
-
-//        fieldM = new JTextField();
-//        fieldM.setText("7");
-//        fieldM.setEditable(false);
-//        fieldm = new JTextField();
-//        fieldm.setText("10");
-//        fieldm.setEditable(false);
-
-//        rootFrame.coreComponent.add(labelHeading);
-//        rootFrame.coreComponent.add(labelM);
-//        rootFrame.coreComponent.add(fieldM);
-//        rootFrame.coreComponent.add(labelm);
-//        rootFrame.coreComponent.add(fieldm);
         rootFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         openTaskButtons = new ArrayList<>();
     }
@@ -122,11 +105,6 @@ public class Quest_2
 
         events.sort((event, t1) -> (int)(event.eventTime - t1.eventTime));
 
-        for (Double d:clientsArrivals
-             ) {
-//            System.out.println(d);
-        }
-
         drawChart(clientsArrivals, clientsServTimes);
 
     }
@@ -144,9 +122,8 @@ public class Quest_2
 //        Interval[] intervals = freqTable.intervals;
 //        Object[] chartValues = freqTable.getTableData(1);
 
-        Chart2 chart = new Chart2(1800, 900);
-
-        DrawAction action = new DrawAction() {
+        Chart2 chart = new Chart2(1200, 800);
+        DrawAction chartPaintAction = new DrawAction() {
             @Override
             public void draw(Graphics gr) {
 
@@ -192,64 +169,71 @@ public class Quest_2
                     }
                 }
 
-
-
-
-
-
-
-
-
-
-
-//                int current_clients_count = 0;
-//                Queue<Client> clientsInQueue = new LinkedList<>();
-//
-//                System.out.println("clients are arriving..");
-//
-//                // draw clients
-//                for (Client addedClient : clients)
-//                {
-//                    Queue<Client> clientsInQueue_new = new LinkedList<>();
-////                    clientsInQueue_new.add(addedClient);
-//                    current_clients_count++;
-//
-//                    Client queueClient = clientsInQueue.poll();
-//                    while (queueClient != null)
-//                    {
-//                        if (queueClient.timeLeave <= addedClient.timeArrival)
-//                        {
-//                            for (Client downGradeClient : clientsInQueue)
-//                            {
-//                                if (downGradeClient.timeLeave > queueClient.timeLeave)
-//                                {
-//                                    downGradeClient.downGrade();
-//                                    chart.drawServDowngraded(gr, downGradeClient, queueClient.timeLeave);
-//                                }
-//                            }
-//                            chart.drawServEnd(gr, queueClient);
-//                            current_clients_count--;
-//                        } else
-//                        {
-//                            clientsInQueue_new.add(queueClient);
-//                        }
-//
-//                        queueClient = clientsInQueue.poll();
-//                    }
-//                    clientsInQueue_new.add(addedClient);
-//                    clientsInQueue = clientsInQueue_new;
-//
-//                    addedClient.setGrade(current_clients_count);
-//                    System.out.println("client grade initial is " + addedClient.getGrade());
-//                    chart.drawServStart(gr, addedClient);
-//                    System.out.println(addedClient.timeArrival);
-//                }
             }
         };
 
-
         EFrame frame = EFrame.createCanvasFrame("Графическое состояние очереди клиентов и занятости кассира",
-                action, chart, 1600, 1000);
+                chartPaintAction, chart, 1600, 1000);
+
+        JButton zoomInButton = new JButton();
+        zoomInButton.setText("Zoom In");
+        zoomInButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+
+                JButton paintButton = null;
+                Chart2 chart = null;
+
+                for (Component comp: frame.getContentPane().getComponents())
+                {
+                    if (comp instanceof JButton && ((JButton) comp).getText().matches("paint"))
+                    {
+                        paintButton = (JButton) comp;
+
+                    } else if (comp instanceof Canvas)
+                    {
+                        chart = (Chart2)comp;
+                    }
+                }
+
+                if (paintButton != null && chart != null)
+                {
+                    chart.zoomIn();
+                    paintButton.doClick();
+                }
+            }
+        });
+
+        JButton zoomOutButton = new JButton();
+        zoomOutButton.setText("Zoom Out");
+        zoomOutButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent actionEvent) {
+
+                JButton paintButton = null;
+                Chart2 chart = null;
+
+                for (Component comp: frame.getContentPane().getComponents())
+                {
+                    if (comp instanceof JButton && ((JButton) comp).getText().matches("paint"))
+                    {
+                        paintButton = (JButton) comp;
+                    } else if (comp instanceof Canvas)
+                    {
+                        chart = (Chart2)comp;
+                    }
+                }
+
+                if (paintButton != null && chart != null)
+                {
+                    chart.zoomOut();
+                    paintButton.doClick();
+                }
+            }
+        });
+
+        frame.add(zoomInButton, BoxLayout.LINE_AXIS);
+        frame.add(zoomOutButton, BoxLayout.LINE_AXIS);
 
         createOpenTaskButton(title, frame);
     }
