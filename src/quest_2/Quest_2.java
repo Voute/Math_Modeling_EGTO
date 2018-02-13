@@ -84,6 +84,41 @@ public class Quest_2
             events.add(new Event(client.timeArrival, Event.TYPE_START, client));
             events.add(new Event(client.timeLeave, Event.TYPE_END, client));
         }
+//        Client cl = new Client(1d, 5d, colorHouse.getColor());
+//        clients.add(cl);
+//            events.add(new Event(cl.timeArrival, Event.TYPE_START, cl));
+//            events.add(new Event(cl.timeLeave, Event.TYPE_END, cl));
+//
+//        cl = new Client(2d, 8d, colorHouse.getColor());
+//        clients.add(cl);
+//            events.add(new Event(cl.timeArrival, Event.TYPE_START, cl));
+//            events.add(new Event(cl.timeLeave, Event.TYPE_END, cl));
+//
+//        cl = new Client(4d, 1d, colorHouse.getColor());
+//        clients.add(cl);
+//        events.add(new Event(cl.timeArrival, Event.TYPE_START, cl));
+//        events.add(new Event(cl.timeLeave, Event.TYPE_END, cl));
+//
+//        cl = new Client(9d, 11d, colorHouse.getColor());
+//        clients.add(cl);
+//        events.add(new Event(cl.timeArrival, Event.TYPE_START, cl));
+//        events.add(new Event(cl.timeLeave, Event.TYPE_END, cl));
+//
+//        cl = new Client(8d, 5d, colorHouse.getColor());
+//        clients.add(cl);
+//            events.add(new Event(cl.timeArrival, Event.TYPE_START, cl));
+//            events.add(new Event(cl.timeLeave, Event.TYPE_END, cl));
+//
+//        cl = new Client(14d, 5d, colorHouse.getColor());
+//        clients.add(cl);
+//            events.add(new Event(cl.timeArrival, Event.TYPE_START, cl));
+//            events.add(new Event(cl.timeLeave, Event.TYPE_END, cl));
+//
+//        cl = new Client(16d, 6d, colorHouse.getColor());
+//        clients.add(cl);
+//            events.add(new Event(cl.timeArrival, Event.TYPE_START, cl));
+//            events.add(new Event(cl.timeLeave, Event.TYPE_END, cl));
+
 
         events.sort((event, t1) -> (int)(event.eventTime - t1.eventTime));
 
