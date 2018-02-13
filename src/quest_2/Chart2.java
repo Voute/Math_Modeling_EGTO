@@ -90,23 +90,35 @@ public class Chart2 extends Chart
         int y = y0;
         int length = client.getGrade() * BAR_HEIGHT;
         gr.setColor(client.color);
-        gr.drawLine(x, y, x, y - length);  // x axis
+        gr.drawLine(x, y, x, y - length);
+        client.lastLineX = x;
+        client.lastLineY = y - length;
     }
 
-    public void drawServEnd(Graphics gr, Client client, int current_clients_length)
+    public void drawServEnd(Graphics gr, Client client)
     {
-        int x = (int)client.timeArrival;
-        int y = y0;
-        int length = current_clients_length * BAR_HEIGHT;
+        int x1 = client.lastLineX;
+        int y1 = client.lastLineY;
+        int x2 = x0 + ((int)client.timeLeave) * BAR_WIDTH;
+        int y2 = y1;
         gr.setColor(client.color);
-        gr.drawLine(x, y, x, y - length);  // x axis
+        gr.drawLine(x1, y1, x2, y2);
+        x1 = x2;
+        y1 = y2;
+        x2 = x1;
+        y2 = y0;
+        gr.drawLine(x1, y1, x2, y2);
     }
 
-    public void drawServDowngraded(Graphics gr, Client client, int downgradetime)
+    public void drawServDowngraded(Graphics gr, Client client, double downgradetime)
     {
-//        int x = (int)client.timeArrival;
-//        int y = y0;
-//        int length = current_clients_length * BAR_HEIGHT;
-//        gr.drawLine(x, y, x, y - length);  // x axis
+        int endX = x0 + ((int)downgradetime) * BAR_WIDTH;
+        int endY = y0 - (client.getGrade() + 1) * BAR_HEIGHT;
+        gr.setColor(client.color);
+        gr.drawLine(client.lastLineX, client.lastLineY, endX, endY);
+        int endY2 = y0 - client.getGrade() * BAR_HEIGHT;
+        gr.drawLine(endX, endY, endX, endY2);
+        client.lastLineX = endX;
+        client.lastLineY = endY2;
     }
 }

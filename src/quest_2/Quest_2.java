@@ -114,41 +114,43 @@ public class Quest_2
                 chart.drawInitialLines(gr, (int)workTimeMinutes);
 
                 int current_clients_count = 0;
-                Queue<Client> currentClients = new LinkedList<>();
+                Queue<Client> clientsInQueue = new LinkedList<>();
 
                 System.out.println("clients are arriving..");
 
                 // draw clients
-                for (Client client : clients)
+                for (Client addedClient : clients)
                 {
-                    currentClients.add(client);
+                    Queue<Client> clientsInQueue_new = new LinkedList<>();
+//                    clientsInQueue_new.add(addedClient);
                     current_clients_count++;
 
-                    Queue<Client> currentClients_new = new LinkedList<>();
-                    Client cur_client = currentClients.poll();
-                    while (cur_client != null)
+                    Client queueClient = clientsInQueue.poll();
+                    while (queueClient != null)
                     {
-                        if (cur_client.timeLeave < client.timeArrival)
+                        if (queueClient.timeLeave <= addedClient.timeArrival)
                         {
-                            for (Client downGradeClient : currentClients)
+                            for (Client downGradeClient : clientsInQueue)
                             {
                                 downGradeClient.downGrade();
-                                chart.drawServDowngrade(gr, );
+                                chart.drawServDowngraded(gr, downGradeClient, queueClient.timeLeave);
                             }
-//                            chart.drawServEnd(gr, client, current_clients_count);
+                            chart.drawServEnd(gr, queueClient);
                             current_clients_count--;
                         } else
                         {
-                            currentClients_new.add(cur_client);
+                            clientsInQueue_new.add(queueClient);
                         }
 
-                        cur_client = currentClients.poll();
+                        queueClient = clientsInQueue.poll();
                     }
-                    currentClients = currentClients_new;
+                    clientsInQueue_new.add(addedClient);
+                    clientsInQueue = clientsInQueue_new;
 
-                    client.setGrade(current_clients_count);
-                    chart.drawServStart(gr, client);
-                    System.out.println(client.timeArrival);
+                    addedClient.setGrade(current_clients_count);
+                    System.out.println("client grade initial is " + addedClient.getGrade());
+                    chart.drawServStart(gr, addedClient);
+                    System.out.println(addedClient.timeArrival);
                 }
             }
         };

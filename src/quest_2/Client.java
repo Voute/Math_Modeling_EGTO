@@ -12,6 +12,8 @@ public class Client
     final double timeLeave;
     final Color color;
     int grade = 0;
+    int lastLineX;
+    int lastLineY;
 
     Client(double timeArrival, double timeServ, Color color)
     {
@@ -29,6 +31,7 @@ public class Client
     void downGrade()
     {
         grade--;
+        System.out.println("client is downgraded to " + grade);
     }
 
     void setGrade(int newGrade)
