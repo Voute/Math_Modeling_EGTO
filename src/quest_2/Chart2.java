@@ -72,21 +72,9 @@ public class Chart2 extends Chart
         gr.drawString("clients", x0 - 50, 20);
     }
 
-    @Override
-    public void drawBar(Graphics gr, double height, double x, int barId)
-    {
-        height = factorX(height);
-        x = factorX(x);
-        gr.setColor(Color.CYAN);
-        gr.fillRect(x0 + (int)x + BAR_WIDTH * barId, y0 - (int)height, BAR_WIDTH, (int)height);
-        gr.setColor(Color.RED);
-        gr.drawRect(x0 + (int)x + BAR_WIDTH * barId, y0 - (int)height, BAR_WIDTH, (int)height);
-        System.out.println("rect height = " + height + " rect x = " + x);
-    }
-
     public void drawServStart(Graphics gr, Client client)
     {
-        int x = x0 + ((int)client.timeArrival) * BAR_WIDTH;
+        int x = x0 + ((int)client.timeArrival) * BAR_WIDTH + getChartSecondsRemainder(client.timeArrival);
         int y = y0;
         int length = client.getGrade() * BAR_HEIGHT;
         gr.setColor(client.color);
@@ -99,7 +87,7 @@ public class Chart2 extends Chart
     {
         int x1 = client.lastLineX;
         int y1 = client.lastLineY;
-        int x2 = x0 + ((int)client.timeLeave) * BAR_WIDTH;
+        int x2 = x0 + ((int)client.timeLeave) * BAR_WIDTH + getChartSecondsRemainder(client.timeLeave);
         int y2 = y1;
         gr.setColor(client.color);
         gr.drawLine(x1, y1, x2, y2);
@@ -112,7 +100,7 @@ public class Chart2 extends Chart
 
     public void drawServDowngraded(Graphics gr, Client client, double downgradetime)
     {
-        int endX = x0 + ((int)downgradetime) * BAR_WIDTH;
+        int endX = x0 + ((int)downgradetime) * BAR_WIDTH + getChartSecondsRemainder(downgradetime);
         int endY = y0 - (client.getGrade() + 1) * BAR_HEIGHT;
         gr.setColor(client.color);
         gr.drawLine(client.lastLineX, client.lastLineY, endX, endY);
@@ -120,5 +108,12 @@ public class Chart2 extends Chart
         gr.drawLine(endX, endY, endX, endY2);
         client.lastLineX = endX;
         client.lastLineY = endY2;
+    }
+
+    private int getChartSecondsRemainder(double n)
+    {
+        int mod = (int)( (n - (int)n) * 10 );
+        int seconds = mod * 6; // 6 seconds are in 0.1 minute
+        return (int)(seconds / 10); // draw every 10 seconds
     }
 }
