@@ -7,6 +7,9 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.LinkedList;
+import java.util.Queue;
 
 /**
  * Created by egto1016 on 12.02.2018.
@@ -23,9 +26,11 @@ public class Quest_2
     final int HALL_WORK_END_HOUR = 12;
     final double AVG_TIME_CLIENTS_ARR_MINUTE = 1d;
     final double AVG_TIME_CLIENTS_SERV_MINUTE = 0.5d;
+    double workTimeMinutes;
 
     ArrayList<Double> clientsArrivals;
     ArrayList<Double> clientsServTimes;
+    Queue<Client> clients;
 
     public Quest_2()
     {
@@ -63,15 +68,18 @@ public class Quest_2
 
     public void task_1()
     {
-        double workTimeMinutes = (HALL_WORK_END_HOUR - HALL_WORK_START_HOUR) * 60;
+        clients = new LinkedList<Client>();
+        workTimeMinutes = (HALL_WORK_END_HOUR - HALL_WORK_START_HOUR) * 60;
         clientsArrivals = generateArrivals(workTimeMinutes, AVG_TIME_CLIENTS_ARR_MINUTE);
         clientsServTimes = new ArrayList<>();
         double clientsPerMinute = 1 / AVG_TIME_CLIENTS_SERV_MINUTE;
+        ColorWarehouse colorHouse = new ColorWarehouse();
 
         for (int i = 0; i < clientsArrivals.size(); i++)
         {
             clientsServTimes.add(generateRandomDouble(clientsPerMinute));
 //            System.out.println(clientsServTimes.get(i));
+            clients.add(new Client(clientsArrivals.get(i), clientsServTimes.get(i), colorHouse.getColor()));
         }
 
         for (Double d:clientsArrivals
@@ -80,6 +88,7 @@ public class Quest_2
         }
 
         drawChart(clientsArrivals, clientsServTimes);
+
     }
 
     public void show()
@@ -95,17 +104,52 @@ public class Quest_2
 //        Interval[] intervals = freqTable.intervals;
 //        Object[] chartValues = freqTable.getTableData(1);
 
-        Chart2 chart = new Chart2(1600, 900);
+        Chart2 chart = new Chart2(1800, 900);
 
         DrawAction action = new DrawAction() {
             @Override
             public void draw(Graphics gr) {
 
                 // draw initial lines
-                chart.drawInitialLines(gr, clientsArrivals.size());
-//                for (int n = 0; n < chartValues.length; n++) {
-//                    chart.drawBar(gr, (int)chartValues[n], intervals[0].gre, n);
-//                }
+                chart.drawInitialLines(gr, (int)workTimeMinutes);
+
+                int current_clients_count = 0;
+                Queue<Client> currentClients = new LinkedList<>();
+
+                System.out.println("clients are arriving..");
+
+                // draw clients
+                for (Client client : clients)
+                {
+                    currentClients.add(client);
+                    current_clients_count++;
+
+                    Queue<Client> currentClients_new = new LinkedList<>();
+                    Client cur_client = currentClients.poll();
+                    while (cur_client != null)
+                    {
+                        if (cur_client.timeLeave < client.timeArrival)
+                        {
+                            for (Client downGradeClient : currentClients)
+                            {
+                                downGradeClient.downGrade();
+                                chart.drawServDowngrade(gr, );
+                            }
+//                            chart.drawServEnd(gr, client, current_clients_count);
+                            current_clients_count--;
+                        } else
+                        {
+                            currentClients_new.add(cur_client);
+                        }
+
+                        cur_client = currentClients.poll();
+                    }
+                    currentClients = currentClients_new;
+
+                    client.setGrade(current_clients_count);
+                    chart.drawServStart(gr, client);
+                    System.out.println(client.timeArrival);
+                }
             }
         };
 

@@ -1,5 +1,7 @@
 package quest_1;
 
+import quest_2.Client;
+
 import java.awt.*;
 
 public class Chart extends Canvas
@@ -56,4 +58,5 @@ public class Chart extends Canvas
         gr.drawRect(x0 + (int)x + BAR_WIDTH * barId, y0 - (int)height, BAR_WIDTH, (int)height);
         System.out.println("rect height = " + height + " rect x = " + x);
     }
+
 }

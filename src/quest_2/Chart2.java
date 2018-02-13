@@ -3,6 +3,7 @@ package quest_2;
 import quest_1.Chart;
 
 import java.awt.*;
+import java.util.List;
 
 /**
  * Created by egto1016 on 12.02.2018.
@@ -15,10 +16,13 @@ public class Chart2 extends Chart
     Chart2(int width, int height)
     {
         super(width, height);
-        BAR_WIDTH = 4;
+        BAR_WIDTH = 6;
         BAR_HEIGHT = 40;
         X_FACTOR = 2d;
         Y_FACTOR = 100;
+
+        x0 = 50;
+        y0 = getHeight() - 50;
     }
 
     public void drawInitialLines(Graphics gr, int minutes)
@@ -41,7 +45,7 @@ public class Chart2 extends Chart
             if (mod_hour == 0)
             {
                 gr.drawString(Integer.toString(trim_hour) + "h", x-xshift_label, y0 + 40);
-                gr.drawLine(x, y0 - half_length, x, y0 + half_length);
+                gr.drawLine(x, y0 - half_length, x, y0 + half_length + 20);
             }
             else if (mod_hour % 5 == 0)
             {
@@ -78,5 +82,31 @@ public class Chart2 extends Chart
         gr.setColor(Color.RED);
         gr.drawRect(x0 + (int)x + BAR_WIDTH * barId, y0 - (int)height, BAR_WIDTH, (int)height);
         System.out.println("rect height = " + height + " rect x = " + x);
+    }
+
+    public void drawServStart(Graphics gr, Client client)
+    {
+        int x = x0 + ((int)client.timeArrival) * BAR_WIDTH;
+        int y = y0;
+        int length = client.getGrade() * BAR_HEIGHT;
+        gr.setColor(client.color);
+        gr.drawLine(x, y, x, y - length);  // x axis
+    }
+
+    public void drawServEnd(Graphics gr, Client client, int current_clients_length)
+    {
+        int x = (int)client.timeArrival;
+        int y = y0;
+        int length = current_clients_length * BAR_HEIGHT;
+        gr.setColor(client.color);
+        gr.drawLine(x, y, x, y - length);  // x axis
+    }
+
+    public void drawServDowngraded(Graphics gr, Client client, int downgradetime)
+    {
+//        int x = (int)client.timeArrival;
+//        int y = y0;
+//        int length = current_clients_length * BAR_HEIGHT;
+//        gr.drawLine(x, y, x, y - length);  // x axis
     }
 }
