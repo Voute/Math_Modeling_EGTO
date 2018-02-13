@@ -4,11 +4,11 @@ import java.awt.*;
 
 public class Chart extends Canvas
 {
-    final Color background = Color.BLACK;
-    int x0, y0;
-    final int BAR_WIDTH = 10;
-    final double X_FACTOR = 1d;
-    final double Y_FACTOR = 100;
+    protected final Color background = Color.BLACK;
+    protected int x0, y0;
+    protected int BAR_WIDTH = 10;
+    protected double X_FACTOR = 1d;
+    protected double Y_FACTOR = 100;
 
     public Chart(int width, int height)
     {
@@ -36,11 +36,11 @@ public class Chart extends Canvas
         gr.drawString("1/L", x0 - 30, Ly);
     }
 
-    private int factorX(double i)
+    protected int factorX(double i)
     {
         return (int) (i * X_FACTOR);
     }
-    private int factorY(double i)
+    protected int factorY(double i)
     {
         return (int) (i * Y_FACTOR);
     }
