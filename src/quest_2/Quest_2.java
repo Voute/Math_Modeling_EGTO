@@ -6,10 +6,9 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
+import java.lang.reflect.Array;
+import java.util.*;
 import java.util.LinkedList;
-import java.util.LinkedList;
-import java.util.Queue;
 
 /**
  * Created by egto1016 on 12.02.2018.
@@ -24,12 +23,13 @@ public class Quest_2
     final int COUNT_CASHIER = 1;
     final int HALL_WORK_START_HOUR = 8;
     final int HALL_WORK_END_HOUR = 12;
-    final double AVG_TIME_CLIENTS_ARR_MINUTE = 1d;
-    final double AVG_TIME_CLIENTS_SERV_MINUTE = 0.5d;
+    final double AVG_TIME_CLIENTS_ARR_MINUTE = 1d;  // 1d
+    final double AVG_TIME_CLIENTS_SERV_MINUTE = 0.5d;   // 0.5d
     double workTimeMinutes;
 
     ArrayList<Double> clientsArrivals;
     ArrayList<Double> clientsServTimes;
+    ArrayList<Event> events = new ArrayList<Event>();
     Queue<Client> clients;
 
     public Quest_2()
@@ -79,8 +79,13 @@ public class Quest_2
         {
             clientsServTimes.add(generateRandomDouble(clientsPerMinute));
 //            System.out.println(clientsServTimes.get(i));
-            clients.add(new Client(clientsArrivals.get(i), clientsServTimes.get(i), colorHouse.getColor()));
+            Client client = new Client(clientsArrivals.get(i), clientsServTimes.get(i), colorHouse.getColor());
+            clients.add(client);
+            events.add(new Event(client.timeArrival, Event.TYPE_START, client));
+            events.add(new Event(client.timeLeave, Event.TYPE_END, client));
         }
+
+        events.sort((event, t1) -> (int)(event.eventTime - t1.eventTime));
 
         for (Double d:clientsArrivals
              ) {
@@ -113,45 +118,97 @@ public class Quest_2
                 // draw initial lines
                 chart.drawInitialLines(gr, (int)workTimeMinutes);
 
-                int current_clients_count = 0;
-                Queue<Client> clientsInQueue = new LinkedList<>();
+                int queueSize = 0;
+                ArrayList<Client> clientsQueue = new ArrayList<Client>();
 
-                System.out.println("clients are arriving..");
-
-                // draw clients
-                for (Client addedClient : clients)
+                for (Event event : events)
                 {
-                    Queue<Client> clientsInQueue_new = new LinkedList<>();
-//                    clientsInQueue_new.add(addedClient);
-                    current_clients_count++;
+                    Client eventClient = event.client;
 
-                    Client queueClient = clientsInQueue.poll();
-                    while (queueClient != null)
+                    if (event.eventType == Event.TYPE_START)
                     {
-                        if (queueClient.timeLeave <= addedClient.timeArrival)
+                        // add eventClient to queue
+                        queueSize++;
+                        clientsQueue.add(eventClient);
+                        eventClient.setGrade(queueSize);
+
+                        // draw initial eventClient line
+                        chart.drawServStart(gr, eventClient);
+                        System.out.println("[Add] queue size is " + queueSize);
+                    } else if (event.eventType == Event.TYPE_END)
+                    {
+                        // draw end eventClient line
+                        chart.drawServEnd(gr, eventClient);
+
+                        // draw downgrade lines for customers in queue that have grades greater than the the ended one
+                        for (Client clientInQueue : clientsQueue)
                         {
-                            for (Client downGradeClient : clientsInQueue)
+                            if (clientInQueue.getGrade() > eventClient.getGrade())
                             {
-                                downGradeClient.downGrade();
-                                chart.drawServDowngraded(gr, downGradeClient, queueClient.timeLeave);
+                                clientInQueue.downGrade();
+                                chart.drawServDowngraded(gr, clientInQueue, event.eventTime);
                             }
-                            chart.drawServEnd(gr, queueClient);
-                            current_clients_count--;
-                        } else
-                        {
-                            clientsInQueue_new.add(queueClient);
                         }
 
-                        queueClient = clientsInQueue.poll();
+                        // remove eventClient from queue
+                        clientsQueue.remove(eventClient);
+                        queueSize--;
+                        System.out.println("[Remove] queue size is " + queueSize);
                     }
-                    clientsInQueue_new.add(addedClient);
-                    clientsInQueue = clientsInQueue_new;
-
-                    addedClient.setGrade(current_clients_count);
-                    System.out.println("client grade initial is " + addedClient.getGrade());
-                    chart.drawServStart(gr, addedClient);
-                    System.out.println(addedClient.timeArrival);
                 }
+
+
+
+
+
+
+
+
+
+
+
+//                int current_clients_count = 0;
+//                Queue<Client> clientsInQueue = new LinkedList<>();
+//
+//                System.out.println("clients are arriving..");
+//
+//                // draw clients
+//                for (Client addedClient : clients)
+//                {
+//                    Queue<Client> clientsInQueue_new = new LinkedList<>();
+////                    clientsInQueue_new.add(addedClient);
+//                    current_clients_count++;
+//
+//                    Client queueClient = clientsInQueue.poll();
+//                    while (queueClient != null)
+//                    {
+//                        if (queueClient.timeLeave <= addedClient.timeArrival)
+//                        {
+//                            for (Client downGradeClient : clientsInQueue)
+//                            {
+//                                if (downGradeClient.timeLeave > queueClient.timeLeave)
+//                                {
+//                                    downGradeClient.downGrade();
+//                                    chart.drawServDowngraded(gr, downGradeClient, queueClient.timeLeave);
+//                                }
+//                            }
+//                            chart.drawServEnd(gr, queueClient);
+//                            current_clients_count--;
+//                        } else
+//                        {
+//                            clientsInQueue_new.add(queueClient);
+//                        }
+//
+//                        queueClient = clientsInQueue.poll();
+//                    }
+//                    clientsInQueue_new.add(addedClient);
+//                    clientsInQueue = clientsInQueue_new;
+//
+//                    addedClient.setGrade(current_clients_count);
+//                    System.out.println("client grade initial is " + addedClient.getGrade());
+//                    chart.drawServStart(gr, addedClient);
+//                    System.out.println(addedClient.timeArrival);
+//                }
             }
         };
 

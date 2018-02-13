@@ -16,7 +16,7 @@ public class Chart2 extends Chart
     Chart2(int width, int height)
     {
         super(width, height);
-        BAR_WIDTH = 6;
+        BAR_WIDTH = 10;  // 6
         BAR_HEIGHT = 40;
         X_FACTOR = 2d;
         Y_FACTOR = 100;
