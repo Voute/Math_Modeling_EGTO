@@ -1,6 +1,7 @@
 package quest_2;
 
 import quest_1.*;
+import quest_1.TextArea;
 
 import javax.swing.*;
 import java.awt.*;
@@ -25,6 +26,8 @@ public class Quest_2
     final int HALL_WORK_END_HOUR = 12;
     final double AVG_TIME_CLIENTS_ARR_MINUTE = 1d;  // 1d
     final double AVG_TIME_CLIENTS_SERV_MINUTE = 0.5d;   // 0.5d
+    double downtime = 0;
+    int clientsSize;
     double workTimeMinutes;
 
     ArrayList<Double> clientsArrivals;
@@ -42,6 +45,7 @@ public class Quest_2
     public void doTasks()
     {
         task_1();
+        task_1_1();
 
         for (JButton button :openTaskButtons
                 ) {
@@ -66,6 +70,7 @@ public class Quest_2
             clients.add(client);
             events.add(new Event(client.timeArrival, Event.TYPE_START, client));
             events.add(new Event(client.timeLeave, Event.TYPE_END, client));
+            System.out.println("event is added: [start] " + client.timeArrival + " [end] " + client.timeLeave);
         }
 //        Client cl = new Client(1d, 5d, colorHouse.getColor());
 //        clients.add(cl);
@@ -102,11 +107,33 @@ public class Quest_2
 //            events.add(new Event(cl.timeArrival, Event.TYPE_START, cl));
 //            events.add(new Event(cl.timeLeave, Event.TYPE_END, cl));
 
-
-        events.sort((event, t1) -> (int)(event.eventTime - t1.eventTime));
+        events.sort((event, t1) -> {
+            if (event.eventTime > t1.eventTime)
+            {
+                return 1;
+            }
+            return -1;
+        } );
+        countDownTime(events);
+        clientsSize = clientsArrivals.size();
 
         drawChart(clientsArrivals, clientsServTimes);
 
+    }
+
+    public void task_1_1()
+    {
+        String title = "Show Calculations";
+        EFrame frame = EFrame.createTextFrame(title, 450, 100);
+
+        TextArea area = (TextArea)frame.coreComponent;
+
+        double v1 =  downtime / workTimeMinutes;
+
+        area.appendln("Коэффициент занятости устройства обслуживания - " + v1);
+        area.appendln("Количество клиентов, посетивших кассовый зал за время его работы - " + clientsSize);
+
+        createOpenTaskButton(title, frame);
     }
 
     public void show()
@@ -131,6 +158,8 @@ public class Quest_2
                 chart.drawInitialLines(gr, (int)workTimeMinutes);
 
                 int queueSize = 0;
+//                boolean isDowntime = true;
+//                double lastClientLeave = 0d;
                 ArrayList<Client> clientsQueue = new ArrayList<Client>();
 
                 for (Event event : events)
@@ -139,6 +168,11 @@ public class Quest_2
 
                     if (event.eventType == Event.TYPE_START)
                     {
+//                        if (isDowntime)
+//                        {
+////                            addToDownTime(lastClientLeave, event.eventTime);
+//                            isDowntime = false;
+//                        }
                         // add eventClient to queue
                         queueSize++;
                         clientsQueue.add(eventClient);
@@ -151,6 +185,7 @@ public class Quest_2
                     {
                         // draw end eventClient line
                         chart.drawServEnd(gr, eventClient);
+//                        lastClientLeave = event.eventTime;
 
                         // draw downgrade lines for customers in queue that have grades greater than the the ended one
                         for (Client clientInQueue : clientsQueue)
@@ -165,6 +200,11 @@ public class Quest_2
                         // remove eventClient from queue
                         clientsQueue.remove(eventClient);
                         queueSize--;
+                        if (queueSize == 0)
+                        {
+//                            isDowntime = true;
+                            System.out.println("downtime is set to true");
+                        }
                         System.out.println("[Remove] queue size is " + queueSize);
                     }
                 }
@@ -270,5 +310,40 @@ public class Quest_2
                 frame.setVisible(true);
             }
         });
+    }
+
+    void addToDownTime(double t1, double t2)
+    {
+        double addition = (t2 - t1);
+        downtime += addition;
+        System.out.println("+ downtime " + addition);
+    }
+
+    void countDownTime(ArrayList<Event> events)
+    {
+        boolean isDowntime = false;
+        int queueSize = 0;
+        double downtimeStart = 0d;
+
+        for (Event event : events)
+        {
+            System.out.println("event time " + event.eventTime);
+
+            if (event.eventType == Event.TYPE_START)
+            {
+                if (queueSize == 0)
+                {
+                    addToDownTime(downtimeStart, event.eventTime);
+                }
+                queueSize++;
+            } else
+            {
+                queueSize--;
+                if (queueSize == 0)
+                {
+                    downtimeStart = event.eventTime;
+                }
+            }
+        }
     }
 }
