@@ -17,7 +17,7 @@ public class Chart2 extends Chart
     Chart2(int width, int height)
     {
         super(width, height);
-        BAR_WIDTH = 2;  // 6
+        BAR_WIDTH = 4;  // 6
         BAR_HEIGHT = 40;
         X_FACTOR = 2d;
         Y_FACTOR = 100;
@@ -157,5 +157,13 @@ public class Chart2 extends Chart
         int mod = (int)( (n - (int)n) * 10 );
         int seconds = mod * 6; // 6 seconds are in 0.1 minute
         return (int)(seconds / 10) * POWER_SEC; // draw every 10 seconds
+    }
+
+    private int calculateSeconds(double minutes)
+    {
+        int min = (int)minutes;
+        int seconds = (int)( (double)(minutes - min) * 60d );
+        seconds += (min * 60);
+        return seconds;
     }
 }
