@@ -7,11 +7,11 @@ public class Event
 {
     public static final  int TYPE_START = 0;
     public static final int TYPE_END = 1;
-    public final double eventTime;
+    public final int eventTime;
     public final int eventType;
     public final Client client;
 
-    public Event(double eventTime, int eventType, Client client)
+    public Event(int eventTime, int eventType, Client client)
     {
         this.eventTime = eventTime;
         this.eventType = eventType;

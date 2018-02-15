@@ -7,15 +7,15 @@ import java.awt.*;
  */
 public class Client
 {
-    final double timeArrival;
-    final double timeServ;
-    final double timeLeave;
+    final int timeArrival;  // in seconds
+    final int timeServ;     // in seconds
+    final int timeLeave;    // in seconds
     final Color color;
     int grade = 0;
     int lastLineX;
     int lastLineY;
 
-    Client(double timeArrival, double timeServ, Color color)
+    Client(int timeArrival, int timeServ, Color color)
     {
         this.timeArrival = timeArrival;
         this.timeServ = timeServ;

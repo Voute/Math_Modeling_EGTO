@@ -66,7 +66,9 @@ public class Quest_2
         {
             clientsServTimes.add(generateRandomDouble(clientsPerMinute));
 //            System.out.println(clientsServTimes.get(i));
-            Client client = new Client(clientsArrivals.get(i), clientsServTimes.get(i), colorHouse.getColor());
+            int arrivalSeconds = calculateSeconds(clientsArrivals.get(i));
+            int servInSeconds = calculateSeconds(clientsServTimes.get(i));
+            Client client = new Client(arrivalSeconds, servInSeconds, colorHouse.getColor());
             clients.add(client);
             events.add(new Event(client.timeArrival, Event.TYPE_START, client));
             events.add(new Event(client.timeLeave, Event.TYPE_END, client));
@@ -345,5 +347,14 @@ public class Quest_2
                 }
             }
         }
+    }
+
+    private int calculateSeconds(double minutes)
+    {
+        int totalSeconds;
+        int min = (int)minutes;
+        int seconds = (int)( (double)(minutes - min) * 60d );
+        totalSeconds = seconds + (min * 60);
+        return totalSeconds;
     }
 }

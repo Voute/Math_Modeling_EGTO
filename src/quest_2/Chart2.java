@@ -3,7 +3,6 @@ package quest_2;
 import quest_1.Chart;
 
 import java.awt.*;
-import java.util.List;
 
 /**
  * Created by egto1016 on 12.02.2018.
@@ -12,15 +11,14 @@ public class Chart2 extends Chart
 {
     int TRAIT_LENGTH = 6;
     int BAR_HEIGHT;
-    int POWER_SEC;
 
     Chart2(int width, int height)
     {
         super(width, height);
-        BAR_WIDTH = 4;  // 6
-        BAR_HEIGHT = 40;
-        X_FACTOR = 2d;
-        Y_FACTOR = 100;
+//        BAR_WIDTH = 4;  // 6
+//        BAR_HEIGHT = 40;
+        X_FACTOR = 10d;
+        Y_FACTOR = 20;
 
         x0 = 50;
         y0 = getHeight() - 50;
@@ -28,24 +26,22 @@ public class Chart2 extends Chart
 
     public void zoomIn()
     {
-        // 6 12 24
-        if (BAR_WIDTH < 24)
+        // 1 5 10 20 40 80 160
+        if (X_FACTOR > 1)
         {
-            BAR_WIDTH *= 2;
-            BAR_HEIGHT *= 2;
-            POWER_SEC *= 2;
+            X_FACTOR /= 2;
+            Y_FACTOR *= 2;
         }
 
     }
 
     public void zoomOut()
     {
-        // 6 12 24
-        if (BAR_WIDTH > 6)
+        // 1 5 10 20 40 80 160
+        if (X_FACTOR < 160)
         {
-            BAR_WIDTH /= 2;
-            BAR_HEIGHT /= 2;
-            POWER_SEC /= 2;
+            X_FACTOR *= 2;
+            Y_FACTOR /= 2;
         }
     }
 
@@ -62,7 +58,7 @@ public class Chart2 extends Chart
 
         for (int i = 1; i <= minutes; i++)
         {
-            int x = x0 + i*BAR_WIDTH;
+            int x = x0 + resizeXvalue(i*60);
 
             int mod_hour = i % 60;
             int trim_hour = (int)(i / 60);
@@ -89,19 +85,23 @@ public class Chart2 extends Chart
 
         for (int i = 1; i <= 10; i++)
         {
-            int y = y0 - i * BAR_HEIGHT;
+            int y = y0 - resizeYvalue(i);
             gr.drawLine(x0 - half_length, y, x0 + half_length, y);
             gr.drawString(Integer.toString(i), x0 - half_length - 20, y + 6);
         }
 
         gr.drawString("minutes", getWidth() - 50, y0 + 20);
         gr.drawString("clients", x0 - 50, 20);
+
+        gr.drawString("x0: " + x0, 10, 60);
+        gr.drawString("y0: " + y0, 10, 80);
     }
 
     public void drawServStart(Graphics gr, Client client)
     {
-        int length = client.getGrade() * BAR_HEIGHT;
-        int x1 = x0 + ((int)client.timeArrival) * BAR_WIDTH + getChartSecondsRemainder(client.timeArrival);
+        int length = resizeYvalue(client.getGrade());
+//        int x1 = x0 + ((int)client.timeArrival) * BAR_WIDTH + getChartSecondsRemainder(client.timeArrival);
+        int x1 = x0 + resizeXvalue(client.timeArrival);
         int y1 = y0;
         int x2 = x1;
         int y2 = y1 - length;
@@ -118,7 +118,8 @@ public class Chart2 extends Chart
     {
         int x1 = client.lastLineX;
         int y1 = client.lastLineY;
-        int x2 = x0 + ((int)client.timeLeave) * BAR_WIDTH + getChartSecondsRemainder(client.timeLeave);
+//        int x2 = x0 + ((int)client.timeLeave) * BAR_WIDTH + getChartSecondsRemainder(client.timeLeave);
+        int x2 = x0 + resizeXvalue(client.timeLeave);
         int y2 = y1;
         int x3 = x2;
         int y3 = y2;
@@ -132,16 +133,17 @@ public class Chart2 extends Chart
         gr.drawLine(x3, y3, x4, y4);
     }
 
-    public void drawServDowngraded(Graphics gr, Client client, double downgradetime)
+    public void drawServDowngraded(Graphics gr, Client client, int downgradetime)
     {
         int x1 = client.lastLineX;
         int y1 = client.lastLineY;
-        int x2 = x0 + ((int)downgradetime) * BAR_WIDTH + getChartSecondsRemainder(downgradetime);
-        int y2 = y0 - (client.getGrade() + 1) * BAR_HEIGHT;
+//        int x2 = x0 + ((int)downgradetime) * BAR_WIDTH + getChartSecondsRemainder(downgradetime);
+        int x2 = x0 + resizeXvalue(downgradetime);
+        int y2 = y0 - resizeYvalue(client.getGrade() + 1); // previous grade
         int x3 = x2;
         int y3 = y2;
         int x4 = x2;
-        int y4 = y0 - client.getGrade() * BAR_HEIGHT;
+        int y4 = y0 - resizeYvalue(client.getGrade());
         gr.setColor(client.color);
         gr.drawLine(x1, y1, x2, y2);
         gr.drawLine(x3, y3, x4, y4);
@@ -152,18 +154,21 @@ public class Chart2 extends Chart
 
     }
 
-    private int getChartSecondsRemainder(double n)
-    {
-        int mod = (int)( (n - (int)n) * 10 );
-        int seconds = mod * 6; // 6 seconds are in 0.1 minute
-        return (int)(seconds / 10) * POWER_SEC; // draw every 10 seconds
-    }
-
     private int calculateSeconds(double minutes)
     {
         int min = (int)minutes;
         int seconds = (int)( (double)(minutes - min) * 60d );
         seconds += (min * 60);
         return seconds;
+    }
+
+    private int resizeXvalue(int seconds)
+    {
+        return (int) (seconds / X_FACTOR);
+    }
+
+    private int resizeYvalue(int clientsSize)
+    {
+        return (int) (clientsSize * Y_FACTOR);
     }
 }
