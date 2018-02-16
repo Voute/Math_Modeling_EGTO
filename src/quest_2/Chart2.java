@@ -3,6 +3,7 @@ package quest_2;
 import quest_1.Chart;
 
 import java.awt.*;
+import java.util.ArrayList;
 
 /**
  * Created by egto1016 on 12.02.2018.
@@ -94,23 +95,32 @@ public class Chart2 extends Chart
         gr.drawString("y0: " + y0, 10, 80);
     }
 
-    public void drawServStart(Graphics gr, Client client)
+    public void drawChartLine(Graphics gr, ChartLine line, Color color)
+    {
+        gr.setColor(color);
+        gr.drawLine(line.x1, line.y1, line.x2, line.y2);
+    }
+
+    public void populateServStart(Client client)
     {
         int length = resizeYvalue(client.getGrade());
         int x1 = x0 + resizeXvalue(client.timeArrival);
         int y1 = y0;
         int x2 = x1;
         int y2 = y1 - length;
-        gr.setColor(client.color);
-        gr.drawLine(x1, y1, x2, y2);
-        client.setLastLineX(x2);
-        client.setLastLineY(y2);
+//        gr.setColor(client.color);
+//        gr.drawLine(x1, y1, x2, y2);
+//        client.setLastLineX(x2);
+//        client.setLastLineY(y2);
+        client.stayLine.clear();
+        client.addStayLine(new ChartLine(x1, y1, x2, y2));
+//        client.addStayLine(new ChartLine(x3, y3, x4, y4));
         System.out.println("[ServStart] [(" + x1 + ";" + y1 + ")(" + x2 + ";" + y2 + ")]");
         System.out.println("[client] start: " + client.timeArrival + " end: " + client.timeLeave);
 
     }
 
-    public void drawServEnd(Graphics gr, Client client)
+    public void populateServEndLines(Client client)
     {
         int x1 = client.lastLineX;
         int y1 = client.lastLineY;
@@ -123,12 +133,15 @@ public class Chart2 extends Chart
         System.out.println("[ServEnd] [(" + x1 + ";" + y1 + ")(" + x2 + ";" + y2 + ")] [(" + x3 + ";" + y3 + ")(" + x4 + ";" + y4 + ")]");
         System.out.println("[client] start: " + client.timeArrival + " end: " + client.timeLeave);
 
-        gr.setColor(client.color);
-        gr.drawLine(x1, y1, x2, y2);
-        gr.drawLine(x3, y3, x4, y4);
+//        gr.setColor(client.color);
+        client.addStayLine(new ChartLine(x1, y1, x2, y2));
+        client.addStayLine(new ChartLine(x3, y3, x4, y4));
+
+//        gr.drawLine(x1, y1, x2, y2);
+//        gr.drawLine(x3, y3, x4, y4);
     }
 
-    public void drawServDowngraded(Graphics gr, Client client, int downgradetime)
+    public void populateSrvDowngradeLines(Client client, int downgradetime)
     {
         int x1 = client.lastLineX;
         int y1 = client.lastLineY;
@@ -138,22 +151,16 @@ public class Chart2 extends Chart
         int y3 = y2;
         int x4 = x2;
         int y4 = y0 - resizeYvalue(client.getGrade());
-        gr.setColor(client.color);
-        gr.drawLine(x1, y1, x2, y2);
-        gr.drawLine(x3, y3, x4, y4);
-        client.setLastLineX(x4);
-        client.setLastLineY(y4);
+//        gr.setColor(client.color);
+//        gr.drawLine(x1, y1, x2, y2);
+//        gr.drawLine(x3, y3, x4, y4);
+        client.addStayLine(new ChartLine(x1, y1, x2, y2));
+        client.addStayLine(new ChartLine(x3, y3, x4, y4));
+//        client.setLastLineX(x4);
+//        client.setLastLineY(y4);
         System.out.println("[ServDown] [(" + x1 + ";" + y1 + ")(" + x2 + ";" + y2 + ")] [(" + x3 + ";" + y3 + ")(" + x4 + ";" + y4 + ")]");
         System.out.println("[client] start: " + client.timeArrival + " end: " + client.timeLeave);
 
-    }
-
-    private int calculateSeconds(double minutes)
-    {
-        int min = (int)minutes;
-        int seconds = (int)( (double)(minutes - min) * 60d );
-        seconds += (min * 60);
-        return seconds;
     }
 
     private int resizeXvalue(int seconds)

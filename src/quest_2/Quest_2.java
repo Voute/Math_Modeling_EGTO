@@ -7,7 +7,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.lang.reflect.Array;
 import java.util.*;
 import java.util.LinkedList;
 
@@ -18,22 +17,28 @@ public class Quest_2
 {
     final EFrame rootFrame;
     final ArrayList<JButton> openTaskButtons;
-//    final JTextField fieldM;
-//    final JTextField fieldm;
 
-    final int COUNT_CASHIER = 1;
     final int HALL_WORK_START_HOUR = 8;
     final int HALL_WORK_END_HOUR = 12;
     final double AVG_TIME_CLIENTS_ARR_MINUTE = 1d;  // 1d
     final double AVG_TIME_CLIENTS_SERV_MINUTE = 0.5d;   // 0.5d
-    double downtime = 0;
     int clientsSize;
-    double workTimeMinutes;
+    int workTimeMinutes;
+    int maxServTimeSeconds = 0;
+    int minServTimeSeconds = 100;
+    int maxQueueSize = 0;
+    double servTimeAverage;
+    int maxCashierWorkDurationSeconds = 0;
+    int minCashierWorkDurationSeconds = 1000;
+    double timeClientsInHallAverage;
+    int lastEventTime;
 
     ArrayList<Double> clientsArrivals;
     ArrayList<Double> clientsServTimes;
     ArrayList<Event> events = new ArrayList<Event>();
     Queue<Client> clients;
+    Chart2 chart = new Chart2(1200, 800);
+    HashMap<Integer,Integer> queuesTotals = new HashMap<Integer,Integer>();
 
     public Quest_2()
     {
@@ -60,16 +65,28 @@ public class Quest_2
         clientsArrivals = generateArrivals(workTimeMinutes, AVG_TIME_CLIENTS_ARR_MINUTE);
         clientsServTimes = new ArrayList<>();
         double clientsPerMinute = 1 / AVG_TIME_CLIENTS_SERV_MINUTE;
+        int totalTimeClientsInHall = 0;
         ColorWarehouse colorHouse = new ColorWarehouse();
 
         for (int i = 0; i < clientsArrivals.size(); i++)
         {
             clientsServTimes.add(generateRandomDouble(clientsPerMinute));
-//            System.out.println(clientsServTimes.get(i));
             int arrivalSeconds = calculateSeconds(clientsArrivals.get(i));
             int servInSeconds = calculateSeconds(clientsServTimes.get(i));
+
+            if (maxServTimeSeconds < servInSeconds)
+            {
+                maxServTimeSeconds = servInSeconds;
+            }
+            if (minServTimeSeconds > servInSeconds)
+            {
+                minServTimeSeconds = servInSeconds;
+            }
+
             Client client = new Client(arrivalSeconds, servInSeconds, colorHouse.getColor());
             clients.add(client);
+            totalTimeClientsInHall += client.timeInHall;
+
             events.add(new Event(client.timeArrival, Event.TYPE_START, client));
             events.add(new Event(client.timeLeave, Event.TYPE_END, client));
             System.out.println("event is added: [start] " + client.timeArrival + " [end] " + client.timeLeave);
@@ -84,22 +101,41 @@ public class Quest_2
         } );
         countDownTime(events);
         clientsSize = clientsArrivals.size();
+        timeClientsInHallAverage = totalTimeClientsInHall/clientsSize;
 
+        renderChart(chart);
         drawChart(clientsArrivals, clientsServTimes);
 
+        for (Integer key : queuesTotals.keySet()) {
+            int queueSize = key;
+            int duration = queuesTotals.get(key);
+            System.out.println("[queue total duration]" + queueSize + " : " + duration);
+        }
     }
 
     public void task_1_1()
     {
         String title = "Show Calculations";
-        EFrame frame = EFrame.createTextFrame(title, 450, 100);
+        EFrame frame = EFrame.createTextFrame(title, 650, 350);
 
         TextArea area = (TextArea)frame.coreComponent;
 
-        double v1 =  downtime / workTimeMinutes;
+        int downtime = queuesTotals.get(-1);
+        System.out.println("downtime: " + downtime  );
+        double v1 =  downtime / workTimeMinutes / 60;
 
         area.appendln("Коэффициент занятости устройства обслуживания - " + v1);
+        area.appendln("Среднее число требований в очереди (среднее число клиентов банка, стоящих в очереди) - " + calculateVariable2(queuesTotals, lastEventTime));
         area.appendln("Количество клиентов, посетивших кассовый зал за время его работы - " + clientsSize);
+        area.appendln("Максимальное время нахождения клиента в очереди (час:мин:сек) - " + resolveDurationString(maxServTimeSeconds));
+        area.appendln("Минимальное время нахождения клиента в очереди (час:мин:сек) - " + resolveDurationString(minServTimeSeconds));
+        area.appendln("Максимальная длина очереди (кол-во человек) - " + maxQueueSize);
+        area.appendln("Среднее время нахождения клиента в очереди (от общего количества) (час:мин:сек) - " + resolveDurationString((int)servTimeAverage));
+        area.appendln("Минимальное время работы устройства обслуживания (кассира) без перерыва (час:мин:сек) - " +
+                resolveDurationString(minCashierWorkDurationSeconds));
+        area.appendln("Максимальное время работы устройства обслуживания (кассира) без перерыва (час:мин:сек) - " +
+                resolveDurationString(maxCashierWorkDurationSeconds));
+        area.appendln("Среднее время пребывания клиента в зале (час:мин:сек) - " + resolveDurationString((int)timeClientsInHallAverage));
 
         createOpenTaskButton(title, frame);
     }
@@ -113,7 +149,6 @@ public class Quest_2
     {
         String title = "График";
 
-        Chart2 chart = new Chart2(1200, 800);
         DrawAction chartPaintAction = new DrawAction() {
             @Override
             public void draw(Graphics gr) {
@@ -121,46 +156,11 @@ public class Quest_2
                 // draw initial lines
                 chart.drawInitialLines(gr, (int)workTimeMinutes);
 
-                int queueSize = 0;
-                ArrayList<Client> clientsQueue = new ArrayList<Client>();
-
-                for (Event event : events)
+                for (Client client : clients)
                 {
-                    Client eventClient = event.client;
-
-                    if (event.eventType == Event.TYPE_START)
+                    for (ChartLine line: client.stayLine)
                     {
-                        // add eventClient to queue
-                        queueSize++;
-                        clientsQueue.add(eventClient);
-                        eventClient.setGrade(queueSize);
-
-                        // draw initial eventClient line
-                        chart.drawServStart(gr, eventClient);
-                        System.out.println("[Add] queue size is " + queueSize);
-                    } else if (event.eventType == Event.TYPE_END)
-                    {
-                        // draw end eventClient line
-                        chart.drawServEnd(gr, eventClient);
-
-                        // draw downgrade lines for customers in queue that have grades greater than the the ended one
-                        for (Client clientInQueue : clientsQueue)
-                        {
-                            if (clientInQueue.getGrade() > eventClient.getGrade())
-                            {
-                                clientInQueue.downGrade();
-                                chart.drawServDowngraded(gr, clientInQueue, event.eventTime);
-                            }
-                        }
-
-                        // remove eventClient from queue
-                        clientsQueue.remove(eventClient);
-                        queueSize--;
-                        if (queueSize == 0)
-                        {
-                            System.out.println("downtime is set to true");
-                        }
-                        System.out.println("[Remove] queue size is " + queueSize);
+                        chart.drawChartLine(gr, line, client.color);
                     }
                 }
 
@@ -194,6 +194,7 @@ public class Quest_2
                 if (paintButton != null && chart != null)
                 {
                     chart.zoomIn();
+                    renderChart(chart);
                     paintButton.doClick();
                 }
             }
@@ -222,6 +223,7 @@ public class Quest_2
                 if (paintButton != null && chart != null)
                 {
                     chart.zoomOut();
+                    renderChart(chart);
                     paintButton.doClick();
                 }
             }
@@ -273,39 +275,41 @@ public class Quest_2
         });
     }
 
-    void addToDownTime(double t1, double t2)
-    {
-        double addition = (t2 - t1);
-        downtime += addition;
-        System.out.println("+ downtime " + addition);
-    }
-
     void countDownTime(ArrayList<Event> events)
     {
         boolean isDowntime = false;
         int queueSize = 0;
-        double downtimeStart = 0d;
+        int cashierStartWorkTime = 0;
+        int previousEventTime = 0;
 
         for (Event event : events)
         {
             System.out.println("event time " + event.eventTime);
+            addToQueueTotal(queueSize-1, event.eventTime - previousEventTime);
 
             if (event.eventType == Event.TYPE_START)
             {
                 if (queueSize == 0)
                 {
-                    addToDownTime(downtimeStart, event.eventTime);
+                    cashierStartWorkTime = event.eventTime;
                 }
                 queueSize++;
+                if (queueSize > maxQueueSize) maxQueueSize = queueSize;
             } else
             {
                 queueSize--;
                 if (queueSize == 0)
                 {
-                    downtimeStart = event.eventTime;
+                    int cashierWorkDuration = event.eventTime - cashierStartWorkTime;
+                    if (cashierWorkDuration > maxCashierWorkDurationSeconds) maxCashierWorkDurationSeconds = cashierWorkDuration;
+                    if (cashierWorkDuration < minCashierWorkDurationSeconds) minCashierWorkDurationSeconds = cashierWorkDuration;
                 }
             }
+
+            previousEventTime = event.eventTime;
         }
+
+        lastEventTime = previousEventTime;
     }
 
     private int calculateSeconds(double minutes)
@@ -315,5 +319,96 @@ public class Quest_2
         int seconds = (int)( (double)(minutes - min) * 60d );
         totalSeconds = seconds + (min * 60);
         return totalSeconds;
+    }
+
+    private String resolveDurationString(int durationSeconds)
+    {
+        int minuteSeconds = 60;
+        int hourSeconds = minuteSeconds * 60;
+        int hours = (int)(durationSeconds / hourSeconds);
+        int minutes = (int)( durationSeconds % hourSeconds / minuteSeconds );
+        int seconds = (int)( durationSeconds % hourSeconds % minuteSeconds );
+
+        String duration = hours + ":" + minutes + ":" + seconds;
+        return duration;
+    }
+
+    void renderChart(Chart2 chart)
+    {
+        int queueSize = 0;
+        ArrayList<Client> clientsQueue = new ArrayList<Client>();
+        int totalClientsTimeInQueue = 0;
+
+        for (Event event : events)
+        {
+            Client eventClient = event.client;
+
+            if (event.eventType == Event.TYPE_START)
+            {
+                // add eventClient to queue
+                queueSize++;
+                clientsQueue.add(eventClient);
+                eventClient.setGrade(queueSize);
+
+                // draw initial eventClient line
+                chart.populateServStart(eventClient);
+                System.out.println("[Add] queue size is " + queueSize);
+
+                if (queueSize == 1)     // client will be served immediately
+                {
+                    totalClientsTimeInQueue += event.client.setServStartTime(event.eventTime);
+                }
+
+            } else if (event.eventType == Event.TYPE_END)
+            {
+                // draw end eventClient line
+                chart.populateServEndLines(eventClient);
+
+                // draw downgrade lines for customers in queue that have grades greater than the the ended one
+                for (Client clientInQueue : clientsQueue)
+                {
+                    if (clientInQueue.getGrade() > eventClient.getGrade())
+                    {
+                        if (clientInQueue.downGrade() == 1)
+                        {
+                            totalClientsTimeInQueue += event.client.setServStartTime(event.eventTime);
+                        }
+                        chart.populateSrvDowngradeLines(clientInQueue, event.eventTime);
+                    }
+                }
+
+                // remove eventClient from queue
+                clientsQueue.remove(eventClient);
+                queueSize--;
+                System.out.println("[Remove] queue size is " + queueSize);
+            }
+
+        }
+
+        servTimeAverage = totalClientsTimeInQueue / clientsSize;
+    }
+
+    void addToQueueTotal(int queueSize, int duration)
+    {
+        if (!queuesTotals.containsKey(queueSize))
+        {
+            queuesTotals.put(queueSize, duration);
+        } else {
+            int updatedTotal = queuesTotals.get(queueSize) + duration;
+            queuesTotals.replace(queueSize, updatedTotal);
+        }
+    }
+
+    double calculateVariable2(HashMap<Integer, Integer> queueKeys, int lastEventTime)
+    {
+        double result = 0d;
+        for (Integer key : queueKeys.keySet())
+        {
+            if (key >= 0) result += key * queueKeys.get(key);
+        }
+        System.out.println("iT: " + result);
+        System.out.println(lastEventTime);
+        result /= lastEventTime;
+        return result;
     }
 }
