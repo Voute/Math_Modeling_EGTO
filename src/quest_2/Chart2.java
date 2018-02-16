@@ -10,13 +10,10 @@ import java.awt.*;
 public class Chart2 extends Chart
 {
     int TRAIT_LENGTH = 6;
-    int BAR_HEIGHT;
 
     Chart2(int width, int height)
     {
         super(width, height);
-//        BAR_WIDTH = 4;  // 6
-//        BAR_HEIGHT = 40;
         X_FACTOR = 10d;
         Y_FACTOR = 20;
 
@@ -100,15 +97,14 @@ public class Chart2 extends Chart
     public void drawServStart(Graphics gr, Client client)
     {
         int length = resizeYvalue(client.getGrade());
-//        int x1 = x0 + ((int)client.timeArrival) * BAR_WIDTH + getChartSecondsRemainder(client.timeArrival);
         int x1 = x0 + resizeXvalue(client.timeArrival);
         int y1 = y0;
         int x2 = x1;
         int y2 = y1 - length;
         gr.setColor(client.color);
         gr.drawLine(x1, y1, x2, y2);
-        client.lastLineX = x2;
-        client.lastLineY = y2;
+        client.setLastLineX(x2);
+        client.setLastLineY(y2);
         System.out.println("[ServStart] [(" + x1 + ";" + y1 + ")(" + x2 + ";" + y2 + ")]");
         System.out.println("[client] start: " + client.timeArrival + " end: " + client.timeLeave);
 
@@ -118,7 +114,6 @@ public class Chart2 extends Chart
     {
         int x1 = client.lastLineX;
         int y1 = client.lastLineY;
-//        int x2 = x0 + ((int)client.timeLeave) * BAR_WIDTH + getChartSecondsRemainder(client.timeLeave);
         int x2 = x0 + resizeXvalue(client.timeLeave);
         int y2 = y1;
         int x3 = x2;
@@ -137,7 +132,6 @@ public class Chart2 extends Chart
     {
         int x1 = client.lastLineX;
         int y1 = client.lastLineY;
-//        int x2 = x0 + ((int)downgradetime) * BAR_WIDTH + getChartSecondsRemainder(downgradetime);
         int x2 = x0 + resizeXvalue(downgradetime);
         int y2 = y0 - resizeYvalue(client.getGrade() + 1); // previous grade
         int x3 = x2;
@@ -147,8 +141,8 @@ public class Chart2 extends Chart
         gr.setColor(client.color);
         gr.drawLine(x1, y1, x2, y2);
         gr.drawLine(x3, y3, x4, y4);
-        client.lastLineX = x4;
-        client.lastLineY = y4;
+        client.setLastLineX(x4);
+        client.setLastLineY(y4);
         System.out.println("[ServDown] [(" + x1 + ";" + y1 + ")(" + x2 + ";" + y2 + ")] [(" + x3 + ";" + y3 + ")(" + x4 + ";" + y4 + ")]");
         System.out.println("[client] start: " + client.timeArrival + " end: " + client.timeLeave);
 

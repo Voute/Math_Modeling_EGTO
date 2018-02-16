@@ -34,6 +34,18 @@ public class Client
         System.out.println("client is downgraded to " + grade);
     }
 
+    void setLastLineX(int n)
+    {
+        lastLineX = n;
+        System.out.println("[set] lastLineX: " + n);
+    }
+
+    void setLastLineY(int n)
+    {
+        lastLineY = n;
+        System.out.println("[set] lastLineY: " + n);
+    }
+
     void setGrade(int newGrade)
     {
         grade = newGrade;

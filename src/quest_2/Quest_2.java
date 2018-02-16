@@ -74,40 +74,6 @@ public class Quest_2
             events.add(new Event(client.timeLeave, Event.TYPE_END, client));
             System.out.println("event is added: [start] " + client.timeArrival + " [end] " + client.timeLeave);
         }
-//        Client cl = new Client(1d, 5d, colorHouse.getColor());
-//        clients.add(cl);
-//            events.add(new Event(cl.timeArrival, Event.TYPE_START, cl));
-//            events.add(new Event(cl.timeLeave, Event.TYPE_END, cl));
-//
-//        cl = new Client(2d, 8d, colorHouse.getColor());
-//        clients.add(cl);
-//            events.add(new Event(cl.timeArrival, Event.TYPE_START, cl));
-//            events.add(new Event(cl.timeLeave, Event.TYPE_END, cl));
-//
-//        cl = new Client(4d, 1d, colorHouse.getColor());
-//        clients.add(cl);
-//        events.add(new Event(cl.timeArrival, Event.TYPE_START, cl));
-//        events.add(new Event(cl.timeLeave, Event.TYPE_END, cl));
-//
-//        cl = new Client(9d, 11d, colorHouse.getColor());
-//        clients.add(cl);
-//        events.add(new Event(cl.timeArrival, Event.TYPE_START, cl));
-//        events.add(new Event(cl.timeLeave, Event.TYPE_END, cl));
-//
-//        cl = new Client(8d, 5d, colorHouse.getColor());
-//        clients.add(cl);
-//            events.add(new Event(cl.timeArrival, Event.TYPE_START, cl));
-//            events.add(new Event(cl.timeLeave, Event.TYPE_END, cl));
-//
-//        cl = new Client(14d, 5d, colorHouse.getColor());
-//        clients.add(cl);
-//            events.add(new Event(cl.timeArrival, Event.TYPE_START, cl));
-//            events.add(new Event(cl.timeLeave, Event.TYPE_END, cl));
-//
-//        cl = new Client(16d, 6d, colorHouse.getColor());
-//        clients.add(cl);
-//            events.add(new Event(cl.timeArrival, Event.TYPE_START, cl));
-//            events.add(new Event(cl.timeLeave, Event.TYPE_END, cl));
 
         events.sort((event, t1) -> {
             if (event.eventTime > t1.eventTime)
@@ -147,10 +113,6 @@ public class Quest_2
     {
         String title = "График";
 
-//        ETable freqTable = ETable.getFrequencyInstance(generatedValues_1);
-//        Interval[] intervals = freqTable.intervals;
-//        Object[] chartValues = freqTable.getTableData(1);
-
         Chart2 chart = new Chart2(1200, 800);
         DrawAction chartPaintAction = new DrawAction() {
             @Override
@@ -160,8 +122,6 @@ public class Quest_2
                 chart.drawInitialLines(gr, (int)workTimeMinutes);
 
                 int queueSize = 0;
-//                boolean isDowntime = true;
-//                double lastClientLeave = 0d;
                 ArrayList<Client> clientsQueue = new ArrayList<Client>();
 
                 for (Event event : events)
@@ -170,11 +130,6 @@ public class Quest_2
 
                     if (event.eventType == Event.TYPE_START)
                     {
-//                        if (isDowntime)
-//                        {
-////                            addToDownTime(lastClientLeave, event.eventTime);
-//                            isDowntime = false;
-//                        }
                         // add eventClient to queue
                         queueSize++;
                         clientsQueue.add(eventClient);
@@ -187,7 +142,6 @@ public class Quest_2
                     {
                         // draw end eventClient line
                         chart.drawServEnd(gr, eventClient);
-//                        lastClientLeave = event.eventTime;
 
                         // draw downgrade lines for customers in queue that have grades greater than the the ended one
                         for (Client clientInQueue : clientsQueue)
@@ -204,7 +158,6 @@ public class Quest_2
                         queueSize--;
                         if (queueSize == 0)
                         {
-//                            isDowntime = true;
                             System.out.println("downtime is set to true");
                         }
                         System.out.println("[Remove] queue size is " + queueSize);
@@ -300,7 +253,13 @@ public class Quest_2
 
     double generateRandomDouble(double La)
     {
-        return Math.log(1d - Math.random()) / -La;
+        double result = 0;
+        while (result < 0.1d)
+        {
+            result = Math.log(1d - Math.random()) / -La;
+        }
+
+        return result;
     }
 
     private void createOpenTaskButton(String title, EFrame frame) {
