@@ -48,7 +48,6 @@ public class Chart2 extends Chart
         gr.setColor(Color.black);
         gr.fillRect(0,0,getWidth(), getHeight());
         gr.setColor(Color.WHITE);
-//        gr.drawString("x0 = " + x0 + " y0 = " + y0, 400,400);
         gr.drawLine(0, y0, getWidth(), y0);  // x axis
         gr.drawLine(x0, 0, x0, getHeight());  // y axis
 
@@ -108,13 +107,8 @@ public class Chart2 extends Chart
         int y1 = y0;
         int x2 = x1;
         int y2 = y1 - length;
-//        gr.setColor(client.color);
-//        gr.drawLine(x1, y1, x2, y2);
-//        client.setLastLineX(x2);
-//        client.setLastLineY(y2);
         client.stayLine.clear();
         client.addStayLine(new ChartLine(x1, y1, x2, y2));
-//        client.addStayLine(new ChartLine(x3, y3, x4, y4));
         System.out.println("[ServStart] [(" + x1 + ";" + y1 + ")(" + x2 + ";" + y2 + ")]");
         System.out.println("[client] start: " + client.timeArrival + " end: " + client.timeLeave);
 
@@ -133,12 +127,9 @@ public class Chart2 extends Chart
         System.out.println("[ServEnd] [(" + x1 + ";" + y1 + ")(" + x2 + ";" + y2 + ")] [(" + x3 + ";" + y3 + ")(" + x4 + ";" + y4 + ")]");
         System.out.println("[client] start: " + client.timeArrival + " end: " + client.timeLeave);
 
-//        gr.setColor(client.color);
         client.addStayLine(new ChartLine(x1, y1, x2, y2));
         client.addStayLine(new ChartLine(x3, y3, x4, y4));
 
-//        gr.drawLine(x1, y1, x2, y2);
-//        gr.drawLine(x3, y3, x4, y4);
     }
 
     public void populateSrvDowngradeLines(Client client, int downgradetime)
@@ -151,13 +142,8 @@ public class Chart2 extends Chart
         int y3 = y2;
         int x4 = x2;
         int y4 = y0 - resizeYvalue(client.getGrade());
-//        gr.setColor(client.color);
-//        gr.drawLine(x1, y1, x2, y2);
-//        gr.drawLine(x3, y3, x4, y4);
         client.addStayLine(new ChartLine(x1, y1, x2, y2));
         client.addStayLine(new ChartLine(x3, y3, x4, y4));
-//        client.setLastLineX(x4);
-//        client.setLastLineY(y4);
         System.out.println("[ServDown] [(" + x1 + ";" + y1 + ")(" + x2 + ";" + y2 + ")] [(" + x3 + ";" + y3 + ")(" + x4 + ";" + y4 + ")]");
         System.out.println("[client] start: " + client.timeArrival + " end: " + client.timeLeave);
 
