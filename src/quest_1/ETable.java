@@ -30,6 +30,18 @@ public class ETable extends JTable
         return table;
     }
 
+    public static ETable getFrequencyInstance3(Double[] array)
+    {
+        int size = array.length;
+        Interval[] intervals = generateIntervals3(array);
+        String[] tableColumns = {"quest_1.Interval", "Count", "Frequency"};
+        Object[][] tableValues = fillTableValues(intervals, size);
+
+        ETable table = new ETable(tableValues, tableColumns, intervals);
+
+        return table;
+    }
+
     public static ETable getDistributionInstance()
     {
         String[] tableColumns = {"key", "1", "2", "3", "4", "5", "6", "7"};
@@ -106,6 +118,23 @@ public class ETable extends JTable
         return intervals;
     }
 
+    static private Interval[] generateIntervals3(Double[] array)
+    {
+        Interval[] intervals;
+
+        intervals = generateEmptyIntervals3();
+        int size = array.length;
+
+        // filling intervals with frequency
+        for (int i = 0; i < size; i++) {
+            for (int n = 0; n < sizeIntervals; n++) {
+                intervals[n].check(array[i]);
+            }
+        }
+
+        return intervals;
+    }
+
     static private Object[][] fillTableValues(Interval[] intervals, int arraySize)
     {
         Object[][] tableValues; // 0 - String, 1 - Integer, 2 - Double
@@ -156,6 +185,24 @@ public class ETable extends JTable
         returnArray[7] = new Interval(0.7d, 0.8d);
         returnArray[8] = new Interval(0.8d, 0.9d);
         returnArray[9] = new Interval(0.9d, 1d);
+
+        return returnArray;
+    }
+
+    private static Interval[] generateEmptyIntervals3()
+    {
+        Interval[] returnArray = new Interval[10];
+
+        returnArray[0] = new Interval(0d, 0.4d);
+        returnArray[1] = new Interval(0.4d, 0.8d);
+        returnArray[2] = new Interval(0.8d, 1.2d);
+        returnArray[3] = new Interval(1.2d, 1.6d);
+        returnArray[4] = new Interval(1.6d, 2.0d);
+        returnArray[5] = new Interval(2.0d, 2.4d);
+        returnArray[6] = new Interval(2.4d, 2.8d);
+        returnArray[7] = new Interval(2.8d, 3.2d);
+        returnArray[8] = new Interval(3.2d, 3.6d);
+        returnArray[9] = new Interval(3.6d, 4.0d);
 
         return returnArray;
     }

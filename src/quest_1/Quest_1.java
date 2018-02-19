@@ -19,12 +19,13 @@ public class Quest_1
     Double[] generatedValues_1;
     Double[] generatedValues_2;
     Double[] generatedValues_2d;
+    Double[] generatedValues_3;
     Object[][] distributionValues_2;
     DiscreteInterval[] discreteIntervals;
 
     public Quest_1()
     {
-        rootFrame = EFrame.createSimpleFrame("Practice 1. Tasks", 250, 500);
+        rootFrame = EFrame.createSimpleFrame("Practice 1. Tasks", 250, 600);
 
         JLabel labelHeading = new JLabel("Generator parameters:");
         JLabel labelM = new JLabel("M:");
@@ -58,6 +59,11 @@ public class Quest_1
         task_2_2();
         task_2_3();
         task_2_4();
+        task_3_0();
+        task_3_1();
+        task_3_2();
+        task_3_3();
+        task_3_4();
 
         for (JButton button :openTaskButtons
              ) {
@@ -232,6 +238,82 @@ public class Quest_1
                 chart.drawBar(gr, (int)chartValues[n], intervals[0].gre, n);
             }
         };
+
+        EFrame frame = EFrame.createCanvasFrame(title, action, chart, 600, 600);
+
+        createOpenTaskButton(title, frame);
+    }
+
+    private void task_3_0()
+    {
+        int size = 1000;
+        generatedValues_3 = Calculator.generateNumbers3(size);
+    }
+
+    private void task_3_1()
+    {
+        String title = "Task 3.1";
+        EFrame frame = EFrame.createTextFrame(title, 250, 100);
+
+        TextArea area = (TextArea) frame.coreComponent;
+
+        double mathExpectation = Calculator.calculateMathExpectation(generatedValues_3);
+        double selectiveAverage = Calculator.calculateSelectiveAverage(generatedValues_3);
+
+        area.appendln("M{X} = " + mathExpectation);
+        area.append("V srednyaya = " + selectiveAverage);
+
+        createOpenTaskButton(title, frame);
+    }
+
+    private void task_3_2()
+    {
+        String title = "Task 3.2";
+        EFrame frame = EFrame.createTextFrame(title, 250, 100);
+
+        TextArea area = (TextArea)frame.coreComponent;
+
+        double dispersion = Calculator.calculateDispersion(generatedValues_3);
+        double selectiveDispersion = Calculator.calculateSelectiveDispersion(generatedValues_3);
+
+        area.appendln("D{X} = " + dispersion);
+        area.append("V dispersiya = " + selectiveDispersion);
+
+        createOpenTaskButton(title, frame);
+    }
+
+    private void task_3_3()
+    {
+        String title = "Task 3.3";
+
+        ETable freqTable = ETable.getFrequencyInstance3(generatedValues_3);
+        EFrame frame = EFrame.createTableFrame(title, freqTable, 300, 300);
+
+        createOpenTaskButton(title, frame);
+    }
+
+    private void task_3_4()
+    {
+        String title = "Task 3.4";
+
+        ETable freqTable = ETable.getFrequencyInstance3(generatedValues_3);
+        Interval[] intervals = freqTable.intervals;
+        Object[] chartValues = freqTable.getTableData(1);
+
+        Chart chart = new Chart(500, 500);
+
+        DrawAction action = new DrawAction() {
+            @Override
+            public void draw(Graphics gr) {
+
+                // draw initial lines
+                chart.drawInitialLines(gr, 10);
+                for (int n = 0; n < chartValues.length; n++) {
+                    chart.drawBar(gr, (int)chartValues[n], intervals[0].gre, n);
+                }
+            }
+        };
+
 
         EFrame frame = EFrame.createCanvasFrame(title, action, chart, 600, 600);
 
